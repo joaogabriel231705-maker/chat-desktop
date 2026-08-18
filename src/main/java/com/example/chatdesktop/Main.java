@@ -17,7 +17,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-public class HelloApplication extends Application {
+public class Main extends Application {
 
     // =========================================================
     // GROQ
