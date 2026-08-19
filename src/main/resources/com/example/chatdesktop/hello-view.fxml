@@ -1,16 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.chatdesktop.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<BorderPane
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="com.example.chatdesktop.Controller.ChatController"
+        stylesheets="@css/style.css"
+        styleClass="root">
+
+    <!-- CABEÇALHO -->
+
+    <top>
+
+        <HBox
+                spacing="12"
+                alignment="CENTER_LEFT"
+                styleClass="header">
+
+            <children>
+
+                <StackPane>
+
+                    <Circle
+                            radius="22"
+                            fill="#5865F2"/>
+
+                    <Label
+                            text="🤖"
+                            styleClass="robot-icon"/>
+
+                </StackPane>
+
+                <VBox spacing="2">
+
+                    <Label
+                            text="Nexa AI"
+                            styleClass="name-label"/>
+
+                    <HBox
+                            spacing="6"
+                            alignment="CENTER_LEFT">
+
+                        <Circle
+                                radius="4"
+                                fill="#23d18b"/>
+
+                        <Label
+                                text="Online"
+                                styleClass="status-label"/>
+
+                    </HBox>
+
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button
+                        fx:id="limparButton"
+                        text="🗑"
+                        onAction="#limparConversa"
+                        styleClass="clear-button"/>
+
+            </children>
+
+        </HBox>
+
+    </top>
+
+
+    <!-- MENSAGENS -->
+
+    <center>
+
+        <ScrollPane
+                fx:id="scrollPane"
+                fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                styleClass="chat-scroll">
+
+            <content>
+
+                <VBox
+                        fx:id="mensagens"
+                        spacing="14"
+                        fillWidth="true"
+                        styleClass="messages">
+
+                </VBox>
+
+            </content>
+
+        </ScrollPane>
+
+    </center>
+
+
+    <!-- PARTE INFERIOR -->
+
+    <bottom>
+
+        <VBox
+                spacing="7"
+                styleClass="bottom-area">
+
+            <children>
+
+                <HBox
+                        spacing="10"
+                        alignment="CENTER">
+
+                    <children>
+
+                        <TextField
+                                fx:id="inputField"
+                                promptText="Digite sua mensagem..."
+                                onAction="#enviarMensagem"
+                                HBox.hgrow="ALWAYS"
+                                styleClass="input-field"/>
+
+                        <Button
+                                fx:id="sendButton"
+                                text="➤"
+                                onAction="#enviarMensagem"
+                                styleClass="send-button"/>
+
+                    </children>
+
+                </HBox>
+
+                <Label
+                        text="Nexa AI pode cometer erros. Verifique informações importantes."
+                        maxWidth="1.7976931348623157E308"
+                        alignment="CENTER"
+                        styleClass="warning-label"/>
+
+            </children>
+
+        </VBox>
+
+    </bottom>
+
+</BorderPane>

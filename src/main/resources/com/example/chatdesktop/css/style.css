@@ -1,0 +1,111 @@
+.root {
+    -fx-background-color: #0f1117;
+}
+
+/* CABEÇALHO */
+
+.header {
+    -fx-padding: 15px 20px 15px 20px;
+
+    -fx-background-color: #171a21;
+
+    -fx-border-color: #252a34;
+
+    -fx-border-width: 0 0 1px 0;
+}
+
+.robot-icon {
+    -fx-font-size: 20px;
+}
+
+.name-label {
+    -fx-text-fill: white;
+
+    -fx-font-size: 17px;
+
+    -fx-font-weight: bold;
+}
+
+.status-label {
+    -fx-text-fill: #8b93a7;
+
+    -fx-font-size: 12px;
+}
+
+.clear-button {
+    -fx-background-color: transparent;
+
+    -fx-text-fill: #8b93a7;
+
+    -fx-font-size: 18px;
+
+    -fx-cursor: hand;
+}
+
+/* MENSAGENS */
+
+.chat-scroll {
+    -fx-background-color: #0f1117;
+
+    -fx-background: #0f1117;
+
+    -fx-border-color: transparent;
+}
+
+.messages {
+    -fx-padding: 20px;
+}
+
+/* PARTE INFERIOR */
+
+.bottom-area {
+    -fx-padding: 12px 18px 18px 18px;
+
+    -fx-background-color: #0f1117;
+}
+
+.input-field {
+    -fx-pref-height: 48px;
+
+    -fx-background-color: #1b1f27;
+
+    -fx-background-radius: 14px;
+
+    -fx-border-color: #2b303b;
+
+    -fx-border-radius: 14px;
+
+    -fx-border-width: 1px;
+
+    -fx-text-fill: white;
+
+    -fx-prompt-text-fill: #70788a;
+
+    -fx-font-size: 14px;
+
+    -fx-padding: 0 16px 0 16px;
+}
+
+.send-button {
+    -fx-pref-width: 48px;
+
+    -fx-pref-height: 48px;
+
+    -fx-background-color: #5865F2;
+
+    -fx-background-radius: 14px;
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 20px;
+
+    -fx-font-weight: bold;
+
+    -fx-cursor: hand;
+}
+
+.warning-label {
+    -fx-text-fill: #555d6e;
+
+    -fx-font-size: 10px;
+}
