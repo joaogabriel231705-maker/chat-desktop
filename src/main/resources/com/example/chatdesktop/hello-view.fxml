@@ -3,16 +3,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.shape.Circle?>
 
 <BorderPane
         xmlns="http://javafx.com/javafx"
@@ -21,56 +16,50 @@
         stylesheets="@css/style.css"
         styleClass="root">
 
+    <!-- ========================= -->
     <!-- CABEÇALHO -->
+    <!-- ========================= -->
 
     <top>
 
         <HBox
-                spacing="12"
                 alignment="CENTER_LEFT"
+                spacing="15"
                 styleClass="header">
+
+            <padding>
+                <Insets
+                        top="15"
+                        right="20"
+                        bottom="15"
+                        left="20"/>
+            </padding>
 
             <children>
 
-                <StackPane>
+                <VBox
+                        spacing="2">
 
-                    <Circle
-                            radius="22"
-                            fill="#5865F2"/>
-
-                    <Label
-                            text="🤖"
-                            styleClass="robot-icon"/>
-
-                </StackPane>
-
-                <VBox spacing="2">
-
-                    <Label
-                            text="Nexa AI"
-                            styleClass="name-label"/>
-
-                    <HBox
-                            spacing="6"
-                            alignment="CENTER_LEFT">
-
-                        <Circle
-                                radius="4"
-                                fill="#23d18b"/>
+                    <children>
 
                         <Label
-                                text="Online"
-                                styleClass="status-label"/>
+                                text="NEXA AI"
+                                styleClass="title"/>
 
-                    </HBox>
+                        <Label
+                                text="Inteligência artificial"
+                                styleClass="subtitle"/>
+
+                    </children>
 
                 </VBox>
 
-                <Region HBox.hgrow="ALWAYS"/>
+                <HBox
+                        HBox.hgrow="ALWAYS"/>
 
                 <Button
                         fx:id="limparButton"
-                        text="🗑"
+                        text="🗑 Limpar"
                         onAction="#limparConversa"
                         styleClass="clear-button"/>
 
@@ -81,76 +70,91 @@
     </top>
 
 
-    <!-- MENSAGENS -->
+    <!-- ========================= -->
+    <!-- ÁREA DA CONVERSA -->
+    <!-- ========================= -->
 
     <center>
 
-        <ScrollPane
-                fx:id="scrollPane"
-                fitToWidth="true"
-                hbarPolicy="NEVER"
-                vbarPolicy="AS_NEEDED"
-                styleClass="chat-scroll">
-
-            <content>
-
-                <VBox
-                        fx:id="mensagens"
-                        spacing="14"
-                        fillWidth="true"
-                        styleClass="messages">
-
-                </VBox>
-
-            </content>
-
-        </ScrollPane>
-
-    </center>
-
-
-    <!-- PARTE INFERIOR -->
-
-    <bottom>
-
         <VBox
-                spacing="7"
-                styleClass="bottom-area">
+                spacing="10"
+                styleClass="chat-container">
+
+            <padding>
+                <Insets
+                        top="20"
+                        right="20"
+                        bottom="10"
+                        left="20"/>
+            </padding>
 
             <children>
 
+                <TextArea
+                        fx:id="conversaArea"
+                        editable="false"
+                        wrapText="true"
+                        VBox.vgrow="ALWAYS"
+                        promptText="Sua conversa com a Nexa AI aparecerá aqui..."
+                        styleClass="conversation-area"/>
+
                 <HBox
-                        spacing="10"
-                        alignment="CENTER">
+                        alignment="CENTER_RIGHT">
 
                     <children>
 
-                        <TextField
-                                fx:id="inputField"
-                                promptText="Digite sua mensagem..."
-                                onAction="#enviarMensagem"
-                                HBox.hgrow="ALWAYS"
-                                styleClass="input-field"/>
-
                         <Button
-                                fx:id="sendButton"
-                                text="➤"
-                                onAction="#enviarMensagem"
-                                styleClass="send-button"/>
+                                text="📋 Copiar resposta"
+                                onAction="#copiarResposta"
+                                styleClass="copy-button"/>
 
                     </children>
 
                 </HBox>
 
-                <Label
-                        text="Nexa AI pode cometer erros. Verifique informações importantes."
-                        maxWidth="1.7976931348623157E308"
-                        alignment="CENTER"
-                        styleClass="warning-label"/>
-
             </children>
 
         </VBox>
+
+    </center>
+
+
+    <!-- ========================= -->
+    <!-- ÁREA DE DIGITAÇÃO -->
+    <!-- ========================= -->
+
+    <bottom>
+
+        <HBox
+                spacing="10"
+                alignment="CENTER"
+                styleClass="input-container">
+
+            <padding>
+                <Insets
+                        top="15"
+                        right="20"
+                        bottom="20"
+                        left="20"/>
+            </padding>
+
+            <children>
+
+                <TextField
+                        fx:id="mensagemField"
+                        promptText="Digite sua mensagem..."
+                        HBox.hgrow="ALWAYS"
+                        styleClass="message-field"/>
+
+                <Button
+                        fx:id="enviarButton"
+                        text="Enviar  ➤"
+                        onAction="#enviarMensagem"
+                        styleClass="send-button"/>
+
+            </children>
+
+        </HBox>
 
     </bottom>
 

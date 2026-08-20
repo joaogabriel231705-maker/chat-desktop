@@ -1,111 +1,230 @@
+/* ================================= */
+/* FUNDO PRINCIPAL */
+/* ================================= */
+
 .root {
-    -fx-background-color: #0f1117;
+
+    -fx-background-color: #061225;
+
 }
 
+
+/* ================================= */
 /* CABEÇALHO */
+/* ================================= */
 
 .header {
-    -fx-padding: 15px 20px 15px 20px;
 
-    -fx-background-color: #171a21;
+    -fx-background-color: #081a33;
 
-    -fx-border-color: #252a34;
+    -fx-border-color: #16345c;
 
-    -fx-border-width: 0 0 1px 0;
+    -fx-border-width: 0 0 1 0;
 }
 
-.robot-icon {
-    -fx-font-size: 20px;
-}
 
-.name-label {
+.title {
+
     -fx-text-fill: white;
 
-    -fx-font-size: 17px;
+    -fx-font-size: 22px;
 
     -fx-font-weight: bold;
 }
 
-.status-label {
-    -fx-text-fill: #8b93a7;
+
+.subtitle {
+
+    -fx-text-fill: #6f91bd;
 
     -fx-font-size: 12px;
 }
 
-.clear-button {
-    -fx-background-color: transparent;
 
-    -fx-text-fill: #8b93a7;
+/* ================================= */
+/* CONVERSA */
+/* ================================= */
 
-    -fx-font-size: 18px;
+.chat-container {
 
-    -fx-cursor: hand;
+    -fx-background-color: #061225;
 }
 
-/* MENSAGENS */
 
-.chat-scroll {
-    -fx-background-color: #0f1117;
+.conversation-area {
 
-    -fx-background: #0f1117;
+    -fx-background-color: #091a31;
 
-    -fx-border-color: transparent;
-}
+    -fx-control-inner-background: #091a31;
 
-.messages {
-    -fx-padding: 20px;
-}
+    -fx-text-fill: #e8f1ff;
 
-/* PARTE INFERIOR */
+    -fx-highlight-fill: #2368c9;
 
-.bottom-area {
-    -fx-padding: 12px 18px 18px 18px;
-
-    -fx-background-color: #0f1117;
-}
-
-.input-field {
-    -fx-pref-height: 48px;
-
-    -fx-background-color: #1b1f27;
-
-    -fx-background-radius: 14px;
-
-    -fx-border-color: #2b303b;
-
-    -fx-border-radius: 14px;
-
-    -fx-border-width: 1px;
-
-    -fx-text-fill: white;
-
-    -fx-prompt-text-fill: #70788a;
+    -fx-highlight-text-fill: white;
 
     -fx-font-size: 14px;
 
-    -fx-padding: 0 16px 0 16px;
+    -fx-border-color: #17385f;
+
+    -fx-border-width: 1px;
+
+    -fx-border-radius: 10px;
+
+    -fx-background-radius: 10px;
+
+    -fx-padding: 12px;
 }
 
-.send-button {
-    -fx-pref-width: 48px;
 
-    -fx-pref-height: 48px;
+/* ================================= */
+/* CAMPO DE MENSAGEM */
+/* ================================= */
 
-    -fx-background-color: #5865F2;
+.input-container {
 
-    -fx-background-radius: 14px;
+    -fx-background-color: #081a33;
+
+    -fx-border-color: #16345c;
+
+    -fx-border-width: 1 0 0 0;
+}
+
+
+.message-field {
+
+    -fx-background-color: #0d2340;
 
     -fx-text-fill: white;
 
-    -fx-font-size: 20px;
+    -fx-prompt-text-fill: #6683a9;
+
+    -fx-font-size: 14px;
+
+    -fx-background-radius: 10px;
+
+    -fx-border-color: #1b426f;
+
+    -fx-border-radius: 10px;
+
+    -fx-padding: 12px;
+}
+
+
+.message-field:focused {
+
+    -fx-border-color: #3182ff;
+}
+
+
+/* ================================= */
+/* BOTÃO ENVIAR */
+/* ================================= */
+
+.send-button {
+
+    -fx-background-color: #1769e0;
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 13px;
 
     -fx-font-weight: bold;
+
+    -fx-background-radius: 10px;
+
+    -fx-padding: 12px 20px;
 
     -fx-cursor: hand;
 }
 
-.warning-label {
-    -fx-text-fill: #555d6e;
 
-    -fx-font-size: 10px;
+.send-button:hover {
+
+    -fx-background-color: #2880ff;
+}
+
+
+.send-button:pressed {
+
+    -fx-background-color: #0f54b7;
+}
+
+
+.send-button:disabled {
+
+    -fx-opacity: 0.5;
+}
+
+
+/* ================================= */
+/* BOTÃO COPIAR */
+/* ================================= */
+
+.copy-button {
+
+    -fx-background-color: #102a50;
+
+    -fx-text-fill: #8db8ff;
+
+    -fx-border-color: #245aa0;
+
+    -fx-border-width: 1px;
+
+    -fx-background-radius: 8px;
+
+    -fx-border-radius: 8px;
+
+    -fx-padding: 8px 14px;
+
+    -fx-font-size: 12px;
+
+    -fx-cursor: hand;
+}
+
+
+.copy-button:hover {
+
+    -fx-background-color: #174274;
+
+    -fx-text-fill: white;
+
+}
+
+
+.copy-button:pressed {
+
+    -fx-background-color: #0b203e;
+
+}
+
+
+/* ================================= */
+/* BOTÃO LIMPAR */
+/* ================================= */
+
+.clear-button {
+
+    -fx-background-color: transparent;
+
+    -fx-text-fill: #7795bb;
+
+    -fx-border-color: #29496f;
+
+    -fx-border-radius: 8px;
+
+    -fx-background-radius: 8px;
+
+    -fx-padding: 8px 14px;
+
+    -fx-cursor: hand;
+}
+
+
+.clear-button:hover {
+
+    -fx-background-color: #102a4a;
+
+    -fx-text-fill: white;
+
 }
