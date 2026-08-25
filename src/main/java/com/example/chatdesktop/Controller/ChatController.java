@@ -3,16 +3,20 @@ package com.example.chatdesktop.Controller;
 import com.example.chatdesktop.service.GroqService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 public class ChatController {
 
     @FXML
-    private TextArea conversaArea;
+    private VBox mensagensContainer;
 
     @FXML
     private TextField mensagemField;
@@ -21,7 +25,7 @@ public class ChatController {
     private Button enviarButton;
 
     @FXML
-    private Button limparButton;
+    private ScrollPane scrollPane;
 
     private final GroqService groqService;
 
@@ -31,7 +35,13 @@ public class ChatController {
 
     @FXML
     private void initialize() {
+
         mensagemField.setOnAction(event -> enviarMensagem());
+
+        mensagensContainer.heightProperty().addListener(
+                (observable, oldValue, newValue) ->
+                        scrollPane.setVvalue(1.0)
+        );
     }
 
     @FXML
@@ -45,14 +55,13 @@ public class ChatController {
 
         mensagem = mensagem.trim();
 
-        adicionarMensagem(
-                "Você",
-                mensagem
-        );
+        adicionarMensagemUsuario(mensagem);
 
         mensagemField.clear();
 
         enviarButton.setDisable(true);
+
+        adicionarDigitando();
 
         String mensagemFinal = mensagem;
 
@@ -67,12 +76,12 @@ public class ChatController {
 
                 Platform.runLater(() -> {
 
-                    adicionarMensagem(
-                            "Nexa AI",
-                            resposta
-                    );
+                    removerDigitando();
+
+                    adicionarMensagemIA(resposta);
 
                     enviarButton.setDisable(false);
+
                     mensagemField.requestFocus();
                 });
 
@@ -80,12 +89,15 @@ public class ChatController {
 
                 Platform.runLater(() -> {
 
-                    adicionarMensagem(
-                            "Erro",
-                            e.getMessage()
+                    removerDigitando();
+
+                    adicionarMensagemIA(
+                            "Ocorreu um erro ao conversar com a IA:\n\n"
+                                    + e.getMessage()
                     );
 
                     enviarButton.setDisable(false);
+
                     mensagemField.requestFocus();
                 });
             }
@@ -93,30 +105,152 @@ public class ChatController {
         });
 
         thread.setDaemon(true);
+
         thread.start();
     }
 
-    private void adicionarMensagem(
-            String remetente,
+    private void adicionarMensagemUsuario(
             String mensagem
     ) {
 
-        conversaArea.appendText(
-                remetente
-                        + ":\n"
-                        + mensagem
-                        + "\n\n"
+        VBox mensagemBox = new VBox();
+
+        mensagemBox.getStyleClass().add(
+                "user-message-container"
+        );
+
+        Label nome = new Label("Você");
+
+        nome.getStyleClass().add(
+                "message-name"
+        );
+
+        Label texto = new Label(mensagem);
+
+        texto.setWrapText(true);
+
+        texto.getStyleClass().add(
+                "user-message"
+        );
+
+        mensagemBox.getChildren().addAll(
+                nome,
+                texto
+        );
+
+        HBox linha = new HBox(
+                mensagemBox
+        );
+
+        linha.setAlignment(
+                Pos.CENTER_RIGHT
+        );
+
+        linha.getStyleClass().add(
+                "message-row"
+        );
+
+        mensagensContainer.getChildren().add(
+                linha
         );
     }
 
-    @FXML
-    private void copiarResposta() {
+    private void adicionarMensagemIA(
+            String resposta
+    ) {
 
-        String texto = conversaArea.getText();
+        VBox mensagemBox = new VBox();
 
-        if (texto == null || texto.isBlank()) {
-            return;
-        }
+        mensagemBox.setSpacing(10);
+
+        mensagemBox.getStyleClass().add(
+                "ai-message-container"
+        );
+
+        Label nome = new Label("✦  Nexa AI");
+
+        nome.getStyleClass().add(
+                "ai-name"
+        );
+
+        Label texto = new Label(resposta);
+
+        texto.setWrapText(true);
+
+        texto.getStyleClass().add(
+                "ai-message"
+        );
+
+        Button copiarButton =
+                new Button("📋  Copiar");
+
+        copiarButton.getStyleClass().add(
+                "copy-button"
+        );
+
+        copiarButton.setOnAction(event -> {
+
+            copiarTexto(resposta);
+
+            copiarButton.setText(
+                    "✓  Copiado!"
+            );
+
+            Thread thread = new Thread(() -> {
+
+                try {
+
+                    Thread.sleep(1500);
+
+                } catch (InterruptedException ignored) {
+                }
+
+                Platform.runLater(() ->
+                        copiarButton.setText(
+                                "📋  Copiar"
+                        )
+                );
+            });
+
+            thread.setDaemon(true);
+
+            thread.start();
+        });
+
+        HBox botoes = new HBox(
+                copiarButton
+        );
+
+        botoes.setAlignment(
+                Pos.CENTER_RIGHT
+        );
+
+        mensagemBox.getChildren().addAll(
+                nome,
+                texto,
+                botoes
+        );
+
+        HBox linha = new HBox(
+                mensagemBox
+        );
+
+        linha.setAlignment(
+                Pos.CENTER_LEFT
+        );
+
+        linha.getStyleClass().add(
+                "message-row"
+        );
+
+        mensagensContainer.getChildren().add(
+                linha
+        );
+    }
+
+    private void copiarTexto(
+            String texto
+    ) {
 
         Clipboard clipboard =
                 Clipboard.getSystemClipboard();
@@ -129,13 +263,120 @@ public class ChatController {
         clipboard.setContent(content);
     }
 
-    @FXML
-    private void limparConversa() {
+    private void adicionarDigitando() {
 
-        conversaArea.clear();
+        HBox digitando =
+                new HBox();
+
+        digitando.setId(
+                "digitando"
+        );
+
+        digitando.getStyleClass().add(
+                "typing-container"
+        );
+
+        Label texto =
+                new Label(
+                        "✦  Nexa AI está pensando..."
+                );
+
+        texto.getStyleClass().add(
+                "typing-text"
+        );
+
+        digitando.getChildren().add(
+                texto
+        );
+
+        mensagensContainer.getChildren().add(
+                digitando
+        );
+    }
+
+    private void removerDigitando() {
+
+        mensagensContainer
+                .getChildren()
+                .removeIf(
+                        node ->
+                                "digitando".equals(
+                                        node.getId()
+                                )
+                );
+    }
+
+    @FXML
+    private void novaConversa() {
+
+        mensagensContainer
+                .getChildren()
+                .clear();
+
+        mostrarMensagemInicial();
 
         mensagemField.clear();
 
         mensagemField.requestFocus();
+    }
+
+    @FXML
+    private void limparConversa() {
+
+        mensagensContainer
+                .getChildren()
+                .clear();
+
+        mostrarMensagemInicial();
+    }
+
+    private void mostrarMensagemInicial() {
+
+        VBox inicio = new VBox();
+
+        inicio.setAlignment(
+                Pos.CENTER
+        );
+
+        inicio.setSpacing(12);
+
+        inicio.getStyleClass().add(
+                "welcome-container"
+        );
+
+        Label icone =
+                new Label("✦");
+
+        icone.getStyleClass().add(
+                "welcome-icon"
+        );
+
+        Label titulo =
+                new Label(
+                        "Como posso ajudar?"
+                );
+
+        titulo.getStyleClass().add(
+                "welcome-title"
+        );
+
+        Label descricao =
+                new Label(
+                        "Converse, crie e descubra com a Nexa AI."
+                );
+
+        descricao.getStyleClass().add(
+                "welcome-description"
+        );
+
+        inicio.getChildren().addAll(
+                icone,
+                titulo,
+                descricao
+        );
+
+        mensagensContainer
+                .getChildren()
+                .add(inicio);
     }
 }

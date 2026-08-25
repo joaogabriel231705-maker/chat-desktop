@@ -1,127 +1,65 @@
-/* ================================= */
-/* FUNDO PRINCIPAL */
-/* ================================= */
+/* ========================================= */
+/* FUNDO */
+/* ========================================= */
 
 .root {
 
- -fx-background-color: #061225;
+ -fx-background-color: #050d1c;
 
 }
 
 
-/* ================================= */
-/* CABEÇALHO */
-/* ================================= */
+/* ========================================= */
+/* SIDEBAR */
+/* ========================================= */
 
-.header {
+.sidebar {
 
- -fx-background-color: #081a33;
+ -fx-background-color: #071426;
 
- -fx-border-color: #16345c;
+ -fx-border-color: #142b49;
 
- -fx-border-width: 0 0 1 0;
+ -fx-border-width: 0 1 0 0;
+
 }
 
 
-.title {
+.logo {
 
  -fx-text-fill: white;
 
- -fx-font-size: 22px;
+ -fx-font-size: 21px;
 
  -fx-font-weight: bold;
+
 }
 
 
-.subtitle {
+.logo-subtitle {
 
- -fx-text-fill: #6f91bd;
+ -fx-text-fill: #347fff;
 
- -fx-font-size: 12px;
+ -fx-font-size: 11px;
+
+ -fx-font-weight: bold;
+
+ -fx-letter-spacing: 3px;
+
 }
 
 
-/* ================================= */
-/* CONVERSA */
-/* ================================= */
+.section-title {
 
-.chat-container {
+ -fx-text-fill: #506987;
 
- -fx-background-color: #061225;
+ -fx-font-size: 10px;
+
+ -fx-font-weight: bold;
+
 }
 
 
-.conversation-area {
-
- -fx-background-color: #091a31;
-
- -fx-control-inner-background: #091a31;
-
- -fx-text-fill: #e8f1ff;
-
- -fx-highlight-fill: #2368c9;
-
- -fx-highlight-text-fill: white;
-
- -fx-font-size: 14px;
-
- -fx-border-color: #17385f;
-
- -fx-border-width: 1px;
-
- -fx-border-radius: 10px;
-
- -fx-background-radius: 10px;
-
- -fx-padding: 12px;
-}
-
-
-/* ================================= */
-/* CAMPO DE MENSAGEM */
-/* ================================= */
-
-.input-container {
-
- -fx-background-color: #081a33;
-
- -fx-border-color: #16345c;
-
- -fx-border-width: 1 0 0 0;
-}
-
-
-.message-field {
-
- -fx-background-color: #0d2340;
-
- -fx-text-fill: white;
-
- -fx-prompt-text-fill: #6683a9;
-
- -fx-font-size: 14px;
-
- -fx-background-radius: 10px;
-
- -fx-border-color: #1b426f;
-
- -fx-border-radius: 10px;
-
- -fx-padding: 12px;
-}
-
-
-.message-field:focused {
-
- -fx-border-color: #3182ff;
-}
-
-
-/* ================================= */
-/* BOTÃO ENVIAR */
-/* ================================= */
-
-.send-button {
+.new-chat-button {
 
  -fx-background-color: #1769e0;
 
@@ -131,100 +69,423 @@
 
  -fx-font-weight: bold;
 
- -fx-background-radius: 10px;
+ -fx-background-radius: 9;
 
- -fx-padding: 12px 20px;
+ -fx-padding: 12px;
 
  -fx-cursor: hand;
+
 }
 
 
-.send-button:hover {
+.new-chat-button:hover {
 
- -fx-background-color: #2880ff;
+ -fx-background-color: #2780ff;
+
 }
 
 
-.send-button:pressed {
+.conversation-button {
 
- -fx-background-color: #0f54b7;
-}
+ -fx-background-color: #102641;
 
-
-.send-button:disabled {
-
- -fx-opacity: 0.5;
-}
-
-
-/* ================================= */
-/* BOTÃO COPIAR */
-/* ================================= */
-
-.copy-button {
-
- -fx-background-color: #102a50;
-
- -fx-text-fill: #8db8ff;
-
- -fx-border-color: #245aa0;
-
- -fx-border-width: 1px;
-
- -fx-background-radius: 8px;
-
- -fx-border-radius: 8px;
-
- -fx-padding: 8px 14px;
+ -fx-text-fill: #c4d8f4;
 
  -fx-font-size: 12px;
 
+ -fx-alignment: CENTER_LEFT;
+
+ -fx-background-radius: 8;
+
+ -fx-padding: 11px;
+
+}
+
+
+.sidebar-button {
+
+ -fx-background-color: transparent;
+
+ -fx-text-fill: #7189a9;
+
+ -fx-font-size: 12px;
+
+ -fx-alignment: CENTER_LEFT;
+
+ -fx-padding: 10px;
+
  -fx-cursor: hand;
+
+}
+
+
+.sidebar-button:hover {
+
+ -fx-background-color: #10233d;
+
+ -fx-text-fill: white;
+
+}
+
+
+.sidebar-footer {
+
+ -fx-text-fill: #304866;
+
+ -fx-font-size: 10px;
+
+}
+
+
+/* ========================================= */
+/* TOPO */
+/* ========================================= */
+
+.topbar {
+
+ -fx-background-color: #071426;
+
+ -fx-border-color: #142b49;
+
+ -fx-border-width: 0 0 1 0;
+
+}
+
+
+.chat-title {
+
+ -fx-text-fill: white;
+
+ -fx-font-size: 17px;
+
+ -fx-font-weight: bold;
+
+}
+
+
+.online-dot {
+
+ -fx-text-fill: #22d98b;
+
+ -fx-font-size: 9px;
+
+}
+
+
+.online-text {
+
+ -fx-text-fill: #6883a6;
+
+ -fx-font-size: 11px;
+
+}
+
+
+/* ========================================= */
+/* CHAT */
+/* ========================================= */
+
+.chat-scroll {
+
+ -fx-background-color: #050d1c;
+
+ -fx-background: #050d1c;
+
+}
+
+
+.chat-scroll > .viewport {
+
+ -fx-background-color: #050d1c;
+
+}
+
+
+.messages-container {
+
+ -fx-background-color: #050d1c;
+
+}
+
+
+/* ========================================= */
+/* MENSAGENS */
+/* ========================================= */
+
+.message-row {
+
+ -fx-padding: 2px;
+
+}
+
+
+.user-message-container {
+
+ -fx-background-color: #1769e0;
+
+ -fx-background-radius: 14px 14px 3px 14px;
+
+ -fx-padding: 13px 17px;
+
+ -fx-max-width: 600px;
+
+}
+
+
+.message-name {
+
+ -fx-text-fill: #a9c9ff;
+
+ -fx-font-size: 10px;
+
+ -fx-font-weight: bold;
+
+}
+
+
+.user-message {
+
+ -fx-text-fill: white;
+
+ -fx-font-size: 14px;
+
+}
+
+
+.ai-message-container {
+
+ -fx-background-color: #0b1b31;
+
+ -fx-border-color: #183b62;
+
+ -fx-border-width: 1px;
+
+ -fx-background-radius: 14px;
+
+ -fx-border-radius: 14px;
+
+ -fx-padding: 16px 18px;
+
+ -fx-max-width: 700px;
+
+}
+
+
+.ai-name {
+
+ -fx-text-fill: #4b91ff;
+
+ -fx-font-size: 12px;
+
+ -fx-font-weight: bold;
+
+}
+
+
+.ai-message {
+
+ -fx-text-fill: #d9e6f7;
+
+ -fx-font-size: 14px;
+
+ -fx-line-spacing: 3px;
+
+}
+
+
+/* ========================================= */
+/* COPIAR */
+/* ========================================= */
+
+.copy-button {
+
+ -fx-background-color: #102943;
+
+ -fx-text-fill: #7fa7d8;
+
+ -fx-border-color: #23486f;
+
+ -fx-border-radius: 7;
+
+ -fx-background-radius: 7;
+
+ -fx-padding: 7px 11px;
+
+ -fx-font-size: 11px;
+
+ -fx-cursor: hand;
+
 }
 
 
 .copy-button:hover {
 
- -fx-background-color: #174274;
+ -fx-background-color: #17406b;
 
  -fx-text-fill: white;
 
 }
 
 
-.copy-button:pressed {
+/* ========================================= */
+/* DIGITANDO */
+/* ========================================= */
 
- -fx-background-color: #0b203e;
+.typing-container {
+
+ -fx-background-color: #0b1b31;
+
+ -fx-background-radius: 10;
+
+ -fx-padding: 11px 15px;
 
 }
 
 
-/* ================================= */
-/* BOTÃO LIMPAR */
-/* ================================= */
+.typing-text {
 
-.clear-button {
+ -fx-text-fill: #5c83b2;
 
- -fx-background-color: transparent;
+ -fx-font-size: 12px;
 
- -fx-text-fill: #7795bb;
+}
 
- -fx-border-color: #29496f;
 
- -fx-border-radius: 8px;
+/* ========================================= */
+/* BEM-VINDO */
+/* ========================================= */
 
- -fx-background-radius: 8px;
+.welcome-container {
 
- -fx-padding: 8px 14px;
+ -fx-padding: 100px 20px;
+
+}
+
+
+.welcome-icon {
+
+ -fx-text-fill: #3d8cff;
+
+ -fx-font-size: 42px;
+
+}
+
+
+.welcome-title {
+
+ -fx-text-fill: white;
+
+ -fx-font-size: 28px;
+
+ -fx-font-weight: bold;
+
+}
+
+
+.welcome-description {
+
+ -fx-text-fill: #6683a7;
+
+ -fx-font-size: 14px;
+
+}
+
+
+/* ========================================= */
+/* CAMPO DE ENTRADA */
+/* ========================================= */
+
+.input-area {
+
+ -fx-background-color: #071426;
+
+ -fx-border-color: #142b49;
+
+ -fx-border-width: 1 0 0 0;
+
+}
+
+
+.message-field {
+
+ -fx-background-color: #0b1d34;
+
+ -fx-text-fill: white;
+
+ -fx-prompt-text-fill: #597391;
+
+ -fx-font-size: 14px;
+
+ -fx-background-radius: 12px;
+
+ -fx-border-color: #1b3b60;
+
+ -fx-border-radius: 12px;
+
+ -fx-padding: 13px 15px;
+
+}
+
+
+.message-field:focused {
+
+ -fx-border-color: #287dff;
+
+}
+
+
+.send-button {
+
+ -fx-background-color: #1769e0;
+
+ -fx-text-fill: white;
+
+ -fx-font-size: 20px;
+
+ -fx-font-weight: bold;
+
+ -fx-background-radius: 12px;
+
+ -fx-min-width: 48px;
+
+ -fx-min-height: 45px;
 
  -fx-cursor: hand;
+
 }
 
 
-.clear-button:hover {
+.send-button:hover {
 
- -fx-background-color: #102a4a;
+ -fx-background-color: #2b82ff;
 
- -fx-text-fill: white;
+}
+
+
+.send-button:pressed {
+
+ -fx-background-color: #0e54b9;
+
+}
+
+
+.send-button:disabled {
+
+ -fx-opacity: 0.45;
+
+}
+
+
+/* ========================================= */
+/* AVISO */
+/* ========================================= */
+
+.disclaimer {
+
+ -fx-text-fill: #344d6a;
+
+ -fx-font-size: 9px;
+
+ -fx-alignment: CENTER;
 
 }
