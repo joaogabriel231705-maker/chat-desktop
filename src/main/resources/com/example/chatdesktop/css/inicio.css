@@ -1,0 +1,209 @@
+/* ============================= */
+/* FUNDO */
+/* ============================= */
+
+.inicio-root {
+
+    -fx-background-color:
+            linear-gradient(
+                    to bottom right,
+                    #050b18,
+                    #07152d,
+                    #061127
+            );
+
+}
+
+
+/* ============================= */
+/* CÍRCULOS DE LUZ */
+/* ============================= */
+
+.glow-circle {
+
+    -fx-fill: #0d3b8e;
+
+    -fx-opacity: 0.12;
+
+}
+
+
+/* ============================= */
+/* LOGO */
+/* ============================= */
+
+.logo-container {
+
+    -fx-background-color: transparent;
+
+}
+
+.logo-circle {
+
+    -fx-fill: #0b2f70;
+
+    -fx-stroke: #2879ff;
+
+    -fx-stroke-width: 2;
+
+}
+
+.logo-letter {
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 38px;
+
+    -fx-font-weight: bold;
+
+}
+
+
+/* ============================= */
+/* MARCA */
+/* ============================= */
+
+.brand-name {
+
+    -fx-text-fill: #5b9cff;
+
+    -fx-font-size: 16px;
+
+    -fx-font-weight: bold;
+
+    -fx-letter-spacing: 4px;
+
+}
+
+
+/* ============================= */
+/* TÍTULO */
+/* ============================= */
+
+.main-title {
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 42px;
+
+    -fx-font-weight: bold;
+
+}
+
+.main-title-blue {
+
+    -fx-text-fill: #4c94ff;
+
+    -fx-font-size: 42px;
+
+    -fx-font-weight: bold;
+
+}
+
+
+/* ============================= */
+/* DESCRIÇÃO */
+/* ============================= */
+
+.description {
+
+    -fx-text-fill: #8394b5;
+
+    -fx-font-size: 15px;
+
+}
+
+
+/* ============================= */
+/* BOTÃO */
+/* ============================= */
+
+.enter-button {
+
+    -fx-background-color:
+            linear-gradient(
+                    to right,
+                    #1769e0,
+                    #348bff
+            );
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 14px;
+
+    -fx-font-weight: bold;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 16px 32px;
+
+    -fx-cursor: hand;
+
+    -fx-effect:
+            dropshadow(
+                    gaussian,
+                    #1769e0,
+                    20,
+                    0.35,
+                    0,
+                    5
+            );
+
+}
+
+.enter-button:hover {
+
+    -fx-background-color:
+            linear-gradient(
+                    to right,
+                    #2580ff,
+                    #52a0ff
+            );
+
+    -fx-scale-x: 1.03;
+
+    -fx-scale-y: 1.03;
+
+}
+
+.enter-button:pressed {
+
+    -fx-scale-x: 0.98;
+
+    -fx-scale-y: 0.98;
+
+}
+
+
+/* ============================= */
+/* STATUS */
+/* ============================= */
+
+.online-circle {
+
+    -fx-fill: #20d889;
+
+}
+
+.online-text {
+
+    -fx-text-fill: #7184a6;
+
+    -fx-font-size: 12px;
+
+}
+
+
+/* ============================= */
+/* RODAPÉ */
+/* ============================= */
+
+.footer {
+
+    -fx-text-fill: #304565;
+
+    -fx-font-size: 9px;
+
+    -fx-alignment: center;
+
+}

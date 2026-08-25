@@ -13,28 +13,32 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         URL fxml = Main.class.getResource(
-                "/com/example/chatdesktop/hello-view.fxml"
+                "/com/example/chatdesktop/tela-inicial.fxml"
         );
 
         if (fxml == null) {
+
             throw new RuntimeException(
-                    "ERRO: hello-view.fxml não foi encontrado!"
+                    "ERRO: tela-inicial.fxml não foi encontrada!"
             );
         }
 
-        FXMLLoader fxmlLoader =
+        FXMLLoader loader =
                 new FXMLLoader(fxml);
 
         Scene scene = new Scene(
-                fxmlLoader.load(),
-                800,
-                600
+                loader.load(),
+                1000,
+                650
         );
 
-        stage.setTitle("Nexa AI");
+        stage.setTitle(
+                "NexaSoft"
+        );
 
-        stage.setMinWidth(600);
-        stage.setMinHeight(450);
+        stage.setMinWidth(800);
+
+        stage.setMinHeight(550);
 
         stage.setScene(scene);
 
@@ -42,6 +46,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+
         launch();
     }
 }

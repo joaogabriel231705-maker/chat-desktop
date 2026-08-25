@@ -1,11 +1,12 @@
+
 package com.example.chatdesktop.model;
 
-public class Mensagem {
+public class mensagem {
 
     private final String texto;
     private final boolean usuario;
 
-    public Mensagem(
+    public mensagem(
             String texto,
             boolean usuario
     ) {
@@ -22,3 +23,4 @@ public class Mensagem {
         return usuario;
     }
 }
+

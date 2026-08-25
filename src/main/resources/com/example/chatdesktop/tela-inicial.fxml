@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="com.example.chatdesktop.Controller.TelaInicialController"
+        stylesheets="@css/inicio.css"
+        styleClass="inicio-root">
+
+    <children>
+
+        <!-- Efeito decorativo -->
+
+        <Circle
+                layoutX="80"
+                layoutY="80"
+                radius="180"
+                styleClass="glow-circle"/>
+
+        <Circle
+                layoutX="900"
+                layoutY="600"
+                radius="250"
+                styleClass="glow-circle"/>
+
+
+        <!-- Conteúdo principal -->
+
+        <VBox
+                alignment="CENTER"
+                spacing="20"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0">
+
+            <children>
+
+                <!-- Logo -->
+
+                <StackPane
+                        prefWidth="90"
+                        prefHeight="90"
+                        styleClass="logo-container">
+
+                    <children>
+
+                        <Circle
+                                radius="42"
+                                styleClass="logo-circle"/>
+
+                        <Label
+                                text="N"
+                                styleClass="logo-letter"/>
+
+                    </children>
+
+                </StackPane>
+
+
+                <!-- Nome -->
+
+                <Label
+                        text="NEXASOFT"
+                        styleClass="brand-name"/>
+
+
+                <!-- Título -->
+
+                <Label
+                        text="Sua inteligência."
+                        styleClass="main-title"/>
+
+                <Label
+                        text="Seu futuro."
+                        styleClass="main-title-blue"/>
+
+
+                <!-- Descrição -->
+
+                <Label
+                        text="Uma nova experiência de inteligência artificial."
+                        styleClass="description"/>
+
+                <Label
+                        text="Converse, crie e descubra com a Nexa AI."
+                        styleClass="description"/>
+
+
+                <!-- Botão -->
+
+                <Button
+                        text="ENTRAR NA NEXA AI   →"
+                        onAction="#entrarNaIA"
+                        styleClass="enter-button"/>
+
+
+                <!-- Status -->
+
+                <HBox
+                        alignment="CENTER"
+                        spacing="8">
+
+                    <children>
+
+                        <Circle
+                                radius="4"
+                                styleClass="online-circle"/>
+
+                        <Label
+                                text="Nexa AI está online"
+                                styleClass="online-text"/>
+
+                    </children>
+
+                </HBox>
+
+            </children>
+
+        </VBox>
+
+
+        <!-- Rodapé -->
+
+        <Label
+                text="NEXASOFT  •  INTELLIGENCE REIMAGINED"
+                styleClass="footer"
+                AnchorPane.bottomAnchor="20"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0"/>
+
+    </children>
+
+</AnchorPane>

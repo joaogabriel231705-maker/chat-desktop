@@ -4,7 +4,7 @@
 
 .root {
 
-    -fx-background-color: #061225;
+ -fx-background-color: #061225;
 
 }
 
@@ -15,29 +15,29 @@
 
 .header {
 
-    -fx-background-color: #081a33;
+ -fx-background-color: #081a33;
 
-    -fx-border-color: #16345c;
+ -fx-border-color: #16345c;
 
-    -fx-border-width: 0 0 1 0;
+ -fx-border-width: 0 0 1 0;
 }
 
 
 .title {
 
-    -fx-text-fill: white;
+ -fx-text-fill: white;
 
-    -fx-font-size: 22px;
+ -fx-font-size: 22px;
 
-    -fx-font-weight: bold;
+ -fx-font-weight: bold;
 }
 
 
 .subtitle {
 
-    -fx-text-fill: #6f91bd;
+ -fx-text-fill: #6f91bd;
 
-    -fx-font-size: 12px;
+ -fx-font-size: 12px;
 }
 
 
@@ -47,33 +47,33 @@
 
 .chat-container {
 
-    -fx-background-color: #061225;
+ -fx-background-color: #061225;
 }
 
 
 .conversation-area {
 
-    -fx-background-color: #091a31;
+ -fx-background-color: #091a31;
 
-    -fx-control-inner-background: #091a31;
+ -fx-control-inner-background: #091a31;
 
-    -fx-text-fill: #e8f1ff;
+ -fx-text-fill: #e8f1ff;
 
-    -fx-highlight-fill: #2368c9;
+ -fx-highlight-fill: #2368c9;
 
-    -fx-highlight-text-fill: white;
+ -fx-highlight-text-fill: white;
 
-    -fx-font-size: 14px;
+ -fx-font-size: 14px;
 
-    -fx-border-color: #17385f;
+ -fx-border-color: #17385f;
 
-    -fx-border-width: 1px;
+ -fx-border-width: 1px;
 
-    -fx-border-radius: 10px;
+ -fx-border-radius: 10px;
 
-    -fx-background-radius: 10px;
+ -fx-background-radius: 10px;
 
-    -fx-padding: 12px;
+ -fx-padding: 12px;
 }
 
 
@@ -83,37 +83,37 @@
 
 .input-container {
 
-    -fx-background-color: #081a33;
+ -fx-background-color: #081a33;
 
-    -fx-border-color: #16345c;
+ -fx-border-color: #16345c;
 
-    -fx-border-width: 1 0 0 0;
+ -fx-border-width: 1 0 0 0;
 }
 
 
 .message-field {
 
-    -fx-background-color: #0d2340;
+ -fx-background-color: #0d2340;
 
-    -fx-text-fill: white;
+ -fx-text-fill: white;
 
-    -fx-prompt-text-fill: #6683a9;
+ -fx-prompt-text-fill: #6683a9;
 
-    -fx-font-size: 14px;
+ -fx-font-size: 14px;
 
-    -fx-background-radius: 10px;
+ -fx-background-radius: 10px;
 
-    -fx-border-color: #1b426f;
+ -fx-border-color: #1b426f;
 
-    -fx-border-radius: 10px;
+ -fx-border-radius: 10px;
 
-    -fx-padding: 12px;
+ -fx-padding: 12px;
 }
 
 
 .message-field:focused {
 
-    -fx-border-color: #3182ff;
+ -fx-border-color: #3182ff;
 }
 
 
@@ -123,37 +123,37 @@
 
 .send-button {
 
-    -fx-background-color: #1769e0;
+ -fx-background-color: #1769e0;
 
-    -fx-text-fill: white;
+ -fx-text-fill: white;
 
-    -fx-font-size: 13px;
+ -fx-font-size: 13px;
 
-    -fx-font-weight: bold;
+ -fx-font-weight: bold;
 
-    -fx-background-radius: 10px;
+ -fx-background-radius: 10px;
 
-    -fx-padding: 12px 20px;
+ -fx-padding: 12px 20px;
 
-    -fx-cursor: hand;
+ -fx-cursor: hand;
 }
 
 
 .send-button:hover {
 
-    -fx-background-color: #2880ff;
+ -fx-background-color: #2880ff;
 }
 
 
 .send-button:pressed {
 
-    -fx-background-color: #0f54b7;
+ -fx-background-color: #0f54b7;
 }
 
 
 .send-button:disabled {
 
-    -fx-opacity: 0.5;
+ -fx-opacity: 0.5;
 }
 
 
@@ -163,38 +163,38 @@
 
 .copy-button {
 
-    -fx-background-color: #102a50;
+ -fx-background-color: #102a50;
 
-    -fx-text-fill: #8db8ff;
+ -fx-text-fill: #8db8ff;
 
-    -fx-border-color: #245aa0;
+ -fx-border-color: #245aa0;
 
-    -fx-border-width: 1px;
+ -fx-border-width: 1px;
 
-    -fx-background-radius: 8px;
+ -fx-background-radius: 8px;
 
-    -fx-border-radius: 8px;
+ -fx-border-radius: 8px;
 
-    -fx-padding: 8px 14px;
+ -fx-padding: 8px 14px;
 
-    -fx-font-size: 12px;
+ -fx-font-size: 12px;
 
-    -fx-cursor: hand;
+ -fx-cursor: hand;
 }
 
 
 .copy-button:hover {
 
-    -fx-background-color: #174274;
+ -fx-background-color: #174274;
 
-    -fx-text-fill: white;
+ -fx-text-fill: white;
 
 }
 
 
 .copy-button:pressed {
 
-    -fx-background-color: #0b203e;
+ -fx-background-color: #0b203e;
 
 }
 
@@ -205,26 +205,26 @@
 
 .clear-button {
 
-    -fx-background-color: transparent;
+ -fx-background-color: transparent;
 
-    -fx-text-fill: #7795bb;
+ -fx-text-fill: #7795bb;
 
-    -fx-border-color: #29496f;
+ -fx-border-color: #29496f;
 
-    -fx-border-radius: 8px;
+ -fx-border-radius: 8px;
 
-    -fx-background-radius: 8px;
+ -fx-background-radius: 8px;
 
-    -fx-padding: 8px 14px;
+ -fx-padding: 8px 14px;
 
-    -fx-cursor: hand;
+ -fx-cursor: hand;
 }
 
 
 .clear-button:hover {
 
-    -fx-background-color: #102a4a;
+ -fx-background-color: #102a4a;
 
-    -fx-text-fill: white;
+ -fx-text-fill: white;
 
 }

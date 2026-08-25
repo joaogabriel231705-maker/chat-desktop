@@ -11,12 +11,18 @@ public class GroqConfig {
     public static String getApiKey() {
 
         String apiKey =
-                System.getenv("GROQ_API_KEY");
+                System.getenv(
+                        "GROQ_API_KEY"
+                );
 
-        if (apiKey == null || apiKey.isBlank()) {
+        if (
+                apiKey == null ||
+                        apiKey.isBlank()
+        ) {
 
             throw new RuntimeException(
-                    "GROQ_API_KEY não foi configurada."
+                    "A variável GROQ_API_KEY " +
+                            "não foi configurada."
             );
         }
 

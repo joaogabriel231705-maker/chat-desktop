@@ -8,8 +8,12 @@ module com.example.chatdesktop {
             to javafx.fxml;
 
     exports com.example.chatdesktop;
+
     exports com.example.chatdesktop.Controller;
+
     exports com.example.chatdesktop.model;
+
     exports com.example.chatdesktop.service;
+
     exports com.example.chatdesktop.config;
 }
