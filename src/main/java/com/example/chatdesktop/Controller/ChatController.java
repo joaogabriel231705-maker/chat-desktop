@@ -10,9 +10,14 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
 import java.net.URL;
 
 public class ChatController {
+
+    /* ========================================= */
+    /* COMPONENTES DO FXML */
+    /* ========================================= */
 
     @FXML
     private VBox mensagensContainer;
@@ -29,18 +34,54 @@ public class ChatController {
     @FXML
     private Button temaButton;
 
+    @FXML
+    private Button conversaAtualButton;
+
+    @FXML
+    private Label chatTitle;
+
+
+    /* ========================================= */
+    /* SERVIÇO DA IA */
+    /* ========================================= */
+
     private final GroqService groqService;
+
+
+    /* ========================================= */
+    /* CONTROLE DOS TEMAS */
+    /* ========================================= */
 
     private boolean temaClaro = false;
 
+
+    /* ========================================= */
+    /* CONTROLE DO TÍTULO */
+    /* ========================================= */
+
+    private boolean tituloGerado = false;
+
+
+    /* ========================================= */
+    /* CONSTRUTOR */
+    /* ========================================= */
+
     public ChatController() {
+
         groqService = new GroqService();
     }
+
+
+    /* ========================================= */
+    /* INITIALIZE */
+    /* ========================================= */
 
     @FXML
     private void initialize() {
 
-        mensagemField.setOnAction(event -> enviarMensagem());
+        mensagemField.setOnAction(
+                event -> enviarMensagem()
+        );
 
         mensagensContainer.heightProperty().addListener(
                 (observable, oldValue, newValue) ->
@@ -49,6 +90,11 @@ public class ChatController {
 
         carregarTemaEscuro();
     }
+
+
+    /* ========================================= */
+    /* TEMA ESCURO INICIAL */
+    /* ========================================= */
 
     private void carregarTemaEscuro() {
 
@@ -63,7 +109,11 @@ public class ChatController {
         );
 
         if (darkUrl == null) {
-            System.out.println("ERRO: style.css não encontrado!");
+
+            System.out.println(
+                    "ERRO: style.css não encontrado!"
+            );
+
             return;
         }
 
@@ -76,6 +126,7 @@ public class ChatController {
         temaClaro = false;
     }
 
+
     /* ========================================= */
     /* TEMA CLARO / ESCURO */
     /* ========================================= */
@@ -86,7 +137,11 @@ public class ChatController {
         Scene scene = temaButton.getScene();
 
         if (scene == null) {
-            System.out.println("ERRO: Scene não encontrada!");
+
+            System.out.println(
+                    "ERRO: Scene não encontrada!"
+            );
+
             return;
         }
 
@@ -99,46 +154,74 @@ public class ChatController {
         );
 
         if (lightUrl == null) {
-            System.out.println("ERRO: light.css não encontrado!");
+
+            System.out.println(
+                    "ERRO: light.css não encontrado!"
+            );
+
             return;
         }
 
         if (darkUrl == null) {
-            System.out.println("ERRO: style.css não encontrado!");
+
+            System.out.println(
+                    "ERRO: style.css não encontrado!"
+            );
+
             return;
         }
 
-        String lightCss = lightUrl.toExternalForm();
-        String darkCss = darkUrl.toExternalForm();
+        String lightCss =
+                lightUrl.toExternalForm();
 
-        // Remove qualquer tema que esteja carregado
+        String darkCss =
+                darkUrl.toExternalForm();
+
         scene.getStylesheets().clear();
 
-        // Se está escuro, muda para claro
+
+        /* ------------------------------------- */
+        /* TEMA CLARO */
+        /* ------------------------------------- */
+
         if (!temaClaro) {
 
-            scene.getStylesheets().add(lightCss);
+            scene.getStylesheets().add(
+                    lightCss
+            );
 
             temaClaro = true;
 
-            // Agora o botão oferece voltar para o escuro
             temaButton.setText("🌙");
 
-            System.out.println("Tema claro ativado!");
+            System.out.println(
+                    "Tema claro ativado!"
+            );
 
-        } else {
 
-            // Volta para o tema escuro
-            scene.getStylesheets().add(darkCss);
+        }
+
+        /* ------------------------------------- */
+        /* TEMA ESCURO */
+        /* ------------------------------------- */
+
+        else {
+
+            scene.getStylesheets().add(
+                    darkCss
+            );
 
             temaClaro = false;
 
-            // Agora o botão oferece mudar para o claro
             temaButton.setText("☀");
 
-            System.out.println("Tema escuro ativado!");
+            System.out.println(
+                    "Tema escuro ativado!"
+            );
         }
     }
+
+
     /* ========================================= */
     /* ENVIAR MENSAGEM */
     /* ========================================= */
@@ -146,15 +229,40 @@ public class ChatController {
     @FXML
     private void enviarMensagem() {
 
-        String mensagem = mensagemField.getText();
+        String mensagem =
+                mensagemField.getText();
 
-        if (mensagem == null || mensagem.isBlank()) {
+
+        if (mensagem == null ||
+                mensagem.isBlank()) {
+
             return;
         }
 
+
         mensagem = mensagem.trim();
 
-        adicionarMensagemUsuario(mensagem);
+
+        /* ===================================== */
+        /* PRIMEIRA MENSAGEM */
+        /* ===================================== */
+
+        if (!tituloGerado) {
+
+            gerarTituloConversa(mensagem);
+
+            tituloGerado = true;
+        }
+
+
+        /* ===================================== */
+        /* MOSTRA MENSAGEM DO USUÁRIO */
+        /* ===================================== */
+
+        adicionarMensagemUsuario(
+                mensagem
+        );
+
 
         mensagemField.clear();
 
@@ -162,7 +270,13 @@ public class ChatController {
 
         adicionarDigitando();
 
+
         String mensagemFinal = mensagem;
+
+
+        /* ===================================== */
+        /* THREAD DA IA */
+        /* ===================================== */
 
         Thread thread = new Thread(() -> {
 
@@ -173,16 +287,22 @@ public class ChatController {
                                 mensagemFinal
                         );
 
+
                 Platform.runLater(() -> {
 
                     removerDigitando();
 
-                    adicionarMensagemIA(resposta);
+                    adicionarMensagemIA(
+                            resposta
+                    );
 
-                    enviarButton.setDisable(false);
+                    enviarButton.setDisable(
+                            false
+                    );
 
                     mensagemField.requestFocus();
                 });
+
 
             } catch (Exception e) {
 
@@ -195,7 +315,9 @@ public class ChatController {
                                     + e.getMessage()
                     );
 
-                    enviarButton.setDisable(false);
+                    enviarButton.setDisable(
+                            false
+                    );
 
                     mensagemField.requestFocus();
                 });
@@ -203,10 +325,52 @@ public class ChatController {
 
         });
 
+
         thread.setDaemon(true);
 
         thread.start();
     }
+
+
+    /* ========================================= */
+    /* GERAR TÍTULO DA CONVERSA */
+    /* ========================================= */
+
+    private void gerarTituloConversa(String mensagem) {
+
+        if (conversaAtualButton == null) {
+            return;
+        }
+
+        String titulo = mensagem.trim();
+
+        // Remove quebras de linha
+        titulo = titulo.replace("\n", " ");
+        titulo = titulo.replace("\r", " ");
+
+        // Remove espaços duplicados
+        titulo = titulo.replaceAll("\\s+", " ");
+
+        // Limita o tamanho
+        if (titulo.length() > 30) {
+
+            titulo = titulo
+                    .substring(0, 30)
+                    .trim();
+
+            titulo += "...";
+        }
+
+        // ALTERA SOMENTE O BOTÃO DA CONVERSA
+        conversaAtualButton.setText(
+                "💬  " + titulo
+        );
+
+        System.out.println(
+                "Título da conversa: " + titulo
+        );
+    }
+
 
     /* ========================================= */
     /* MENSAGEM DO USUÁRIO */
@@ -216,47 +380,63 @@ public class ChatController {
             String mensagem
     ) {
 
-        VBox mensagemBox = new VBox();
+        VBox mensagemBox =
+                new VBox();
+
 
         mensagemBox.getStyleClass().add(
                 "user-message-container"
         );
 
-        Label nome = new Label("Você");
+
+        Label nome =
+                new Label("Você");
+
 
         nome.getStyleClass().add(
                 "message-name"
         );
 
-        Label texto = new Label(mensagem);
+
+        Label texto =
+                new Label(mensagem);
+
 
         texto.setWrapText(true);
+
 
         texto.getStyleClass().add(
                 "user-message"
         );
+
 
         mensagemBox.getChildren().addAll(
                 nome,
                 texto
         );
 
-        HBox linha = new HBox(
-                mensagemBox
-        );
+
+        HBox linha =
+                new HBox(
+                        mensagemBox
+                );
+
 
         linha.setAlignment(
                 Pos.CENTER_RIGHT
         );
 
+
         linha.getStyleClass().add(
                 "message-row"
         );
+
 
         mensagensContainer.getChildren().add(
                 linha
         );
     }
+
 
     /* ========================================= */
     /* MENSAGEM DA IA */
@@ -266,71 +446,100 @@ public class ChatController {
             String resposta
     ) {
 
-        VBox mensagemBox = new VBox();
+        VBox mensagemBox =
+                new VBox();
+
 
         mensagemBox.setSpacing(10);
+
 
         mensagemBox.getStyleClass().add(
                 "ai-message-container"
         );
 
-        Label nome = new Label("✦  Nexa AI");
+
+        Label nome =
+                new Label(
+                        "✦  Nexa AI"
+                );
+
 
         nome.getStyleClass().add(
                 "ai-name"
         );
 
-        Label texto = new Label(resposta);
+
+        Label texto =
+                new Label(resposta);
+
 
         texto.setWrapText(true);
+
 
         texto.getStyleClass().add(
                 "ai-message"
         );
 
+
         Button copiarButton =
-                new Button("📋  Copiar");
+                new Button(
+                        "📋  Copiar"
+                );
+
 
         copiarButton.getStyleClass().add(
                 "copy-button"
         );
 
+
         copiarButton.setOnAction(event -> {
 
             copiarTexto(resposta);
+
 
             copiarButton.setText(
                     "✓  Copiado!"
             );
 
-            Thread thread = new Thread(() -> {
 
-                try {
+            Thread thread =
+                    new Thread(() -> {
 
-                    Thread.sleep(1500);
+                        try {
 
-                } catch (InterruptedException ignored) {
-                }
+                            Thread.sleep(1500);
 
-                Platform.runLater(() ->
-                        copiarButton.setText(
-                                "📋  Copiar"
-                        )
-                );
-            });
+                        } catch (
+                                InterruptedException ignored
+                        ) {
+                        }
+
+
+                        Platform.runLater(() ->
+                                copiarButton.setText(
+                                        "📋  Copiar"
+                                )
+                        );
+
+                    });
+
 
             thread.setDaemon(true);
 
             thread.start();
         });
 
-        HBox botoes = new HBox(
-                copiarButton
-        );
+
+        HBox botoes =
+                new HBox(
+                        copiarButton
+                );
+
 
         botoes.setAlignment(
                 Pos.CENTER_RIGHT
         );
+
 
         mensagemBox.getChildren().addAll(
                 nome,
@@ -338,25 +547,31 @@ public class ChatController {
                 botoes
         );
 
-        HBox linha = new HBox(
-                mensagemBox
-        );
+
+        HBox linha =
+                new HBox(
+                        mensagemBox
+                );
+
 
         linha.setAlignment(
                 Pos.CENTER_LEFT
         );
 
+
         linha.getStyleClass().add(
                 "message-row"
         );
+
 
         mensagensContainer.getChildren().add(
                 linha
         );
     }
 
+
     /* ========================================= */
-    /* COPIAR */
+    /* COPIAR TEXTO */
     /* ========================================= */
 
     private void copiarTexto(
@@ -366,13 +581,17 @@ public class ChatController {
         Clipboard clipboard =
                 Clipboard.getSystemClipboard();
 
+
         ClipboardContent content =
                 new ClipboardContent();
 
+
         content.putString(texto);
+
 
         clipboard.setContent(content);
     }
+
 
     /* ========================================= */
     /* DIGITANDO */
@@ -383,31 +602,38 @@ public class ChatController {
         HBox digitando =
                 new HBox();
 
+
         digitando.setId(
                 "digitando"
         );
 
+
         digitando.getStyleClass().add(
                 "typing-container"
         );
+
 
         Label texto =
                 new Label(
                         "✦  Nexa AI está pensando..."
                 );
 
+
         texto.getStyleClass().add(
                 "typing-text"
         );
+
 
         digitando.getChildren().add(
                 texto
         );
 
+
         mensagensContainer.getChildren().add(
                 digitando
         );
     }
+
 
     private void removerDigitando() {
 
@@ -421,6 +647,7 @@ public class ChatController {
                 );
     }
 
+
     /* ========================================= */
     /* NOVA CONVERSA */
     /* ========================================= */
@@ -432,12 +659,40 @@ public class ChatController {
                 .getChildren()
                 .clear();
 
+
+        /* Permite gerar novo título */
+
+        tituloGerado = false;
+
+
+        /* Volta título do topo */
+
+        if (chatTitle != null) {
+
+            chatTitle.setText(
+                    "Nexa AI"
+            );
+        }
+
+
+        /* Volta título da sidebar */
+
+        if (conversaAtualButton != null) {
+
+            conversaAtualButton.setText(
+                    "💬  Conversa atual"
+            );
+        }
+
+
         mostrarMensagemInicial();
+
 
         mensagemField.clear();
 
         mensagemField.requestFocus();
     }
+
 
     /* ========================================= */
     /* LIMPAR CONVERSA */
@@ -450,8 +705,29 @@ public class ChatController {
                 .getChildren()
                 .clear();
 
+
+        tituloGerado = false;
+
+
+        if (chatTitle != null) {
+
+            chatTitle.setText(
+                    "Nexa AI"
+            );
+        }
+
+
+        if (conversaAtualButton != null) {
+
+            conversaAtualButton.setText(
+                    "💬  Conversa atual"
+            );
+        }
+
+
         mostrarMensagemInicial();
     }
+
 
     /* ========================================= */
     /* MENSAGEM INICIAL */
@@ -459,42 +735,53 @@ public class ChatController {
 
     private void mostrarMensagemInicial() {
 
-        VBox inicio = new VBox();
+        VBox inicio =
+                new VBox();
+
 
         inicio.setAlignment(
                 Pos.CENTER
         );
 
+
         inicio.setSpacing(12);
+
 
         inicio.getStyleClass().add(
                 "welcome-container"
         );
 
+
         Label icone =
                 new Label("✦");
+
 
         icone.getStyleClass().add(
                 "welcome-icon"
         );
+
 
         Label titulo =
                 new Label(
                         "Como posso ajudar?"
                 );
 
+
         titulo.getStyleClass().add(
                 "welcome-title"
         );
+
 
         Label descricao =
                 new Label(
                         "Converse, crie e descubra com a Nexa AI."
                 );
 
+
         descricao.getStyleClass().add(
                 "welcome-description"
         );
+
 
         inicio.getChildren().addAll(
                 icone,
@@ -502,8 +789,11 @@ public class ChatController {
                 descricao
         );
 
+
         mensagensContainer
                 .getChildren()
-                .add(inicio);
+                .add(
+                        inicio
+                );
     }
 }

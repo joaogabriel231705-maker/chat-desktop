@@ -37,41 +37,79 @@
 
             <children>
 
+                <!-- ============================== -->
+                <!-- LOGO -->
+                <!-- ============================== -->
+
                 <VBox spacing="2">
 
                     <Label
                             text="NEXASOFT"
-                            styleClass="logo"/>
+                            styleClass="chat-title"/>
 
                     <Label
                             text="NEXA AI"
-                            styleClass="logo-subtitle"/>
+                            styleClass="online-text"/>
 
                 </VBox>
+
+
+                <!-- ============================== -->
+                <!-- NOVA CONVERSA -->
+                <!-- ============================== -->
 
                 <Button
                         text="＋  Nova conversa"
                         onAction="#novaConversa"
                         maxWidth="Infinity"
-                        styleClass="new-chat-button"/>
+                        styleClass="new-chat-button"
+                        mnemonicParsing="false"/>
+
+
+                <!-- ============================== -->
+                <!-- TÍTULO DA SEÇÃO -->
+                <!-- ============================== -->
 
                 <Label
                         text="CONVERSAS"
                         styleClass="section-title"/>
 
+
+                <!-- ============================== -->
+                <!-- CONVERSA ATUAL -->
+                <!-- ============================== -->
+
                 <Button
+                        fx:id="conversaAtualButton"
                         text="💬  Conversa atual"
                         maxWidth="Infinity"
-                        styleClass="conversation-button"/>
+                        styleClass="conversation-button"
+                        mnemonicParsing="false"/>
+
+
+                <!-- ============================== -->
+                <!-- ESPAÇAMENTO -->
+                <!-- ============================== -->
 
                 <VBox
                         VBox.vgrow="ALWAYS"/>
+
+
+                <!-- ============================== -->
+                <!-- LIMPAR -->
+                <!-- ============================== -->
 
                 <Button
                         text="🗑  Limpar conversa"
                         onAction="#limparConversa"
                         maxWidth="Infinity"
-                        styleClass="sidebar-button"/>
+                        styleClass="sidebar-button"
+                        mnemonicParsing="false"/>
+
+
+                <!-- ============================== -->
+                <!-- RODAPÉ -->
+                <!-- ============================== -->
 
                 <Label
                         text="NexaSoft • AI"
@@ -115,7 +153,9 @@
 
                         <VBox spacing="2">
 
+                            <!-- TÍTULO DO TOPO -->
                             <Label
+                                    fx:id="chatTitle"
                                     text="Nexa AI"
                                     styleClass="chat-title"/>
 
@@ -139,9 +179,16 @@
 
                         </VBox>
 
-                        <Pane HBox.hgrow="ALWAYS"/>
 
+                        <!-- ESPAÇO -->
+                        <Pane
+                                HBox.hgrow="ALWAYS"/>
+
+
+                        <!-- ============================== -->
                         <!-- BOTÃO DE TEMA -->
+                        <!-- ============================== -->
+
                         <Button
                                 fx:id="temaButton"
                                 text="☀"
@@ -228,7 +275,8 @@
                                     fx:id="enviarButton"
                                     text="➤"
                                     onAction="#enviarMensagem"
-                                    styleClass="send-button"/>
+                                    styleClass="send-button"
+                                    mnemonicParsing="false"/>
 
                         </HBox>
 

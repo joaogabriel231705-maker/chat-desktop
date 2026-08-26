@@ -1,5 +1,3 @@
-
-
 package com.example.chatdesktop.service;
 
 import com.example.chatdesktop.config.GroqConfig;
@@ -22,6 +20,10 @@ public class GroqService {
                 )
                 .build();
     }
+
+    // ==========================================
+    // RESPOSTA NORMAL DA IA
+    // ==========================================
 
     public String enviarMensagem(
             String mensagem
@@ -78,6 +80,89 @@ public class GroqService {
         );
     }
 
+
+    // ==========================================
+    // GERAR TÍTULO DA CONVERSA
+    // ==========================================
+
+    public String gerarTitulo(
+            String mensagem
+    ) throws Exception {
+
+        String prompt =
+                "Crie um título curto para uma conversa " +
+                        "com base na mensagem abaixo. " +
+                        "O título deve ter no máximo 5 palavras. " +
+                        "Não use aspas, emojis ou pontuação. " +
+                        "Responda somente com o título.\n\n" +
+                        "Mensagem: " +
+                        mensagem;
+
+        String json =
+                criarJson(prompt);
+
+        HttpRequest request =
+                HttpRequest.newBuilder()
+                        .uri(
+                                URI.create(
+                                        GroqConfig.GROQ_URL
+                                )
+                        )
+                        .timeout(
+                                Duration.ofSeconds(30)
+                        )
+                        .header(
+                                "Authorization",
+                                "Bearer " +
+                                        GroqConfig.getApiKey()
+                        )
+                        .header(
+                                "Content-Type",
+                                "application/json"
+                        )
+                        .POST(
+                                HttpRequest.BodyPublishers
+                                        .ofString(json)
+                        )
+                        .build();
+
+        HttpResponse<String> response =
+                httpClient.send(
+                        request,
+                        HttpResponse.BodyHandlers
+                                .ofString()
+                );
+
+        if (response.statusCode() < 200 ||
+                response.statusCode() >= 300) {
+
+            throw new Exception(
+                    "Erro ao gerar título (" +
+                            response.statusCode() +
+                            ")"
+            );
+        }
+
+        String titulo =
+                extrairResposta(
+                        response.body()
+                );
+
+        titulo = titulo.trim();
+
+        // Remove aspas caso a IA coloque
+        titulo = titulo
+                .replace("\"", "")
+                .replace("'", "");
+
+        return titulo;
+    }
+
+
+    // ==========================================
+    // CRIAR JSON
+    // ==========================================
+
     private String criarJson(
             String mensagem
     ) {
@@ -96,6 +181,11 @@ public class GroqService {
                 + "]"
                 + "}";
     }
+
+
+    // ==========================================
+    // EXTRAIR RESPOSTA
+    // ==========================================
 
     private String extrairResposta(
             String body
@@ -183,6 +273,11 @@ public class GroqService {
                 "Resposta da API inválida."
         );
     }
+
+
+    // ==========================================
+    // ESCAPAR JSON
+    // ==========================================
 
     private String escaparJson(
             String texto
