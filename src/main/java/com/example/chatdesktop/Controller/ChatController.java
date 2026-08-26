@@ -4,14 +4,13 @@ import com.example.chatdesktop.service.GroqService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import java.net.URL;
 
 public class ChatController {
 
@@ -27,7 +26,12 @@ public class ChatController {
     @FXML
     private ScrollPane scrollPane;
 
+    @FXML
+    private Button temaButton;
+
     private final GroqService groqService;
+
+    private boolean temaClaro = false;
 
     public ChatController() {
         groqService = new GroqService();
@@ -42,7 +46,102 @@ public class ChatController {
                 (observable, oldValue, newValue) ->
                         scrollPane.setVvalue(1.0)
         );
+
+        carregarTemaEscuro();
     }
+
+    private void carregarTemaEscuro() {
+
+        Scene scene = mensagensContainer.getScene();
+
+        if (scene == null) {
+            return;
+        }
+
+        URL darkUrl = getClass().getResource(
+                "/com/example/chatdesktop/css/style.css"
+        );
+
+        if (darkUrl == null) {
+            System.out.println("ERRO: style.css não encontrado!");
+            return;
+        }
+
+        scene.getStylesheets().clear();
+
+        scene.getStylesheets().add(
+                darkUrl.toExternalForm()
+        );
+
+        temaClaro = false;
+    }
+
+    /* ========================================= */
+    /* TEMA CLARO / ESCURO */
+    /* ========================================= */
+
+    @FXML
+    private void alternarTema() {
+
+        Scene scene = temaButton.getScene();
+
+        if (scene == null) {
+            System.out.println("ERRO: Scene não encontrada!");
+            return;
+        }
+
+        URL lightUrl = getClass().getResource(
+                "/com/example/chatdesktop/css/light.css"
+        );
+
+        URL darkUrl = getClass().getResource(
+                "/com/example/chatdesktop/css/style.css"
+        );
+
+        if (lightUrl == null) {
+            System.out.println("ERRO: light.css não encontrado!");
+            return;
+        }
+
+        if (darkUrl == null) {
+            System.out.println("ERRO: style.css não encontrado!");
+            return;
+        }
+
+        String lightCss = lightUrl.toExternalForm();
+        String darkCss = darkUrl.toExternalForm();
+
+        // Remove qualquer tema que esteja carregado
+        scene.getStylesheets().clear();
+
+        // Se está escuro, muda para claro
+        if (!temaClaro) {
+
+            scene.getStylesheets().add(lightCss);
+
+            temaClaro = true;
+
+            // Agora o botão oferece voltar para o escuro
+            temaButton.setText("🌙");
+
+            System.out.println("Tema claro ativado!");
+
+        } else {
+
+            // Volta para o tema escuro
+            scene.getStylesheets().add(darkCss);
+
+            temaClaro = false;
+
+            // Agora o botão oferece mudar para o claro
+            temaButton.setText("☀");
+
+            System.out.println("Tema escuro ativado!");
+        }
+    }
+    /* ========================================= */
+    /* ENVIAR MENSAGEM */
+    /* ========================================= */
 
     @FXML
     private void enviarMensagem() {
@@ -109,6 +208,10 @@ public class ChatController {
         thread.start();
     }
 
+    /* ========================================= */
+    /* MENSAGEM DO USUÁRIO */
+    /* ========================================= */
+
     private void adicionarMensagemUsuario(
             String mensagem
     ) {
@@ -154,6 +257,10 @@ public class ChatController {
                 linha
         );
     }
+
+    /* ========================================= */
+    /* MENSAGEM DA IA */
+    /* ========================================= */
 
     private void adicionarMensagemIA(
             String resposta
@@ -248,6 +355,10 @@ public class ChatController {
         );
     }
 
+    /* ========================================= */
+    /* COPIAR */
+    /* ========================================= */
+
     private void copiarTexto(
             String texto
     ) {
@@ -262,6 +373,10 @@ public class ChatController {
 
         clipboard.setContent(content);
     }
+
+    /* ========================================= */
+    /* DIGITANDO */
+    /* ========================================= */
 
     private void adicionarDigitando() {
 
@@ -306,6 +421,10 @@ public class ChatController {
                 );
     }
 
+    /* ========================================= */
+    /* NOVA CONVERSA */
+    /* ========================================= */
+
     @FXML
     private void novaConversa() {
 
@@ -320,6 +439,10 @@ public class ChatController {
         mensagemField.requestFocus();
     }
 
+    /* ========================================= */
+    /* LIMPAR CONVERSA */
+    /* ========================================= */
+
     @FXML
     private void limparConversa() {
 
@@ -329,6 +452,10 @@ public class ChatController {
 
         mostrarMensagemInicial();
     }
+
+    /* ========================================= */
+    /* MENSAGEM INICIAL */
+    /* ========================================= */
 
     private void mostrarMensagemInicial() {
 

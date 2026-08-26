@@ -488,4 +488,33 @@
 
  -fx-alignment: CENTER;
 
+
+}
+/* ========================================= */
+/* BOTÃO DE TEMA */
+/* ========================================= */
+
+.theme-button {
+
+ -fx-background-color: #102943;
+ -fx-text-fill: #8db8ed;
+
+ -fx-border-color: #23486f;
+ -fx-border-width: 1px;
+
+ -fx-background-radius: 9px;
+ -fx-border-radius: 9px;
+
+ -fx-font-size: 15px;
+ -fx-padding: 7px 10px;
+
+ -fx-cursor: hand;
+}
+
+.theme-button:hover {
+
+ -fx-background-color: #17406b;
+ -fx-text-fill: white;
+
+ -fx-border-color: #287dff;
 }

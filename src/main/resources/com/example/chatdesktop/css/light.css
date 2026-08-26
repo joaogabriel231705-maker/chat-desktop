@@ -1,0 +1,224 @@
+/* ========================================= */
+/* TEMA CLARO */
+/* ========================================= */
+
+.light-theme {
+    -fx-background-color: #f5f8fc;
+}
+
+
+/* ========================================= */
+/* SIDEBAR */
+/* ========================================= */
+
+.light-theme .sidebar {
+    -fx-background-color: #ffffff;
+
+    -fx-border-color: #287dff;
+}
+
+
+.light-theme .logo {
+    -fx-text-fill: #152942;
+}
+
+
+.light-theme .logo-subtitle {
+    -fx-text-fill: #1769e0;
+}
+
+
+.light-theme .section-title {
+    -fx-text-fill: #7890ad;
+}
+
+
+.light-theme .conversation-button {
+    -fx-background-color: #eaf2ff;
+
+    -fx-text-fill: #24558e;
+}
+
+
+.light-theme .sidebar-button {
+    -fx-text-fill: #637b99;
+}
+
+
+.light-theme .sidebar-button:hover {
+    -fx-background-color: #edf4ff;
+
+    -fx-text-fill: #1769e0;
+}
+
+
+.light-theme .sidebar-footer {
+    -fx-text-fill: #9aacc2;
+}
+
+
+/* ========================================= */
+/* TOPO */
+/* ========================================= */
+
+.light-theme .topbar {
+    -fx-background-color: #ffffff;
+
+    -fx-border-color: #d5e4f7;
+}
+
+
+.light-theme .chat-title {
+    -fx-text-fill: #152942;
+}
+
+
+.light-theme .online-text {
+    -fx-text-fill: #7186a1;
+}
+
+
+/* ========================================= */
+/* CHAT */
+/* ========================================= */
+
+.light-theme .chat-scroll {
+    -fx-background-color: #f5f8fc;
+
+    -fx-background: #f5f8fc;
+}
+
+
+.light-theme .chat-scroll > .viewport {
+    -fx-background-color: #f5f8fc;
+}
+
+
+.light-theme .messages-container {
+    -fx-background-color: #f5f8fc;
+}
+
+
+/* ========================================= */
+/* MENSAGEM DA IA */
+/* ========================================= */
+
+.light-theme .ai-message-container {
+    -fx-background-color: #ffffff;
+
+    -fx-border-color: #d5e4f7;
+}
+
+
+.light-theme .ai-name {
+    -fx-text-fill: #1769e0;
+}
+
+
+.light-theme .ai-message {
+    -fx-text-fill: #253b57;
+}
+
+
+/* ========================================= */
+/* DIGITANDO */
+/* ========================================= */
+
+.light-theme .typing-container {
+    -fx-background-color: #ffffff;
+
+    -fx-border-color: #d5e4f7;
+}
+
+
+.light-theme .typing-text {
+    -fx-text-fill: #6f8cad;
+}
+
+
+/* ========================================= */
+/* BEM-VINDO */
+/* ========================================= */
+
+.light-theme .welcome-title {
+    -fx-text-fill: #152942;
+}
+
+
+.light-theme .welcome-description {
+    -fx-text-fill: #7186a1;
+}
+
+
+/* ========================================= */
+/* ÁREA DE ENTRADA */
+/* ========================================= */
+
+.light-theme .input-area {
+    -fx-background-color: #ffffff;
+
+    -fx-border-color: #d5e4f7;
+}
+
+
+.light-theme .message-field {
+    -fx-background-color: #f5f8fc;
+
+    -fx-text-fill: #172b45;
+
+    -fx-prompt-text-fill: #8ca0b8;
+
+    -fx-border-color: #c9dcef;
+}
+
+
+.light-theme .message-field:focused {
+    -fx-border-color: #287dff;
+}
+
+
+/* ========================================= */
+/* COPIAR */
+/* ========================================= */
+
+.light-theme .copy-button {
+    -fx-background-color: #edf4ff;
+
+    -fx-text-fill: #3974b8;
+
+    -fx-border-color: #c8dbf3;
+}
+
+
+.light-theme .copy-button:hover {
+    -fx-background-color: #dceaff;
+
+    -fx-text-fill: #1769e0;
+}
+
+
+/* ========================================= */
+/* AVISO */
+/* ========================================= */
+
+.light-theme .disclaimer {
+    -fx-text-fill: #8a9bb1;
+}
+
+
+/* ========================================= */
+/* BOTÃO DE TEMA */
+/* ========================================= */
+
+.light-theme .theme-button {
+    -fx-background-color: #edf4ff;
+
+    -fx-text-fill: #1769e0;
+
+    -fx-border-color: #c8dbf3;
+}
+
+
+.light-theme .theme-button:hover {
+    -fx-background-color: #dceaff;
+}
