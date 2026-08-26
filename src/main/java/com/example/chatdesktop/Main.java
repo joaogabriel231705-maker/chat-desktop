@@ -26,6 +26,7 @@ public class Main extends Application {
         FXMLLoader loader =
                 new FXMLLoader(fxml);
 
+
         Scene scene = new Scene(
                 loader.load(),
                 1000,

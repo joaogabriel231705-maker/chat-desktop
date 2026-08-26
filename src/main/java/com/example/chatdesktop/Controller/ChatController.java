@@ -306,13 +306,138 @@ public class ChatController {
 
             } catch (Exception e) {
 
+                String mensagemErro;
+
+                switch (e.getMessage()) {
+
+                    // ==================================
+                    // SEM INTERNET
+                    // ==================================
+
+                    case "SEM_INTERNET":
+
+                        mensagemErro =
+                                "🌐 Sem conexão com a internet.\n\n" +
+                                        "Verifique sua conexão e tente novamente.";
+
+                        break;
+
+
+                    // ==================================
+                    // CHAVE INVÁLIDA
+                    // ==================================
+
+                    case "CHAVE_INVALIDA":
+
+                        mensagemErro =
+                                "🔑 Chave da API inválida.\n\n" +
+                                        "Verifique a configuração da chave da Groq.";
+
+                        break;
+
+
+                    // ==================================
+                    // SEM PERMISSÃO
+                    // ==================================
+
+                    case "SEM_PERMISSAO":
+
+                        mensagemErro =
+                                "🔒 A API não permitiu esta solicitação.\n\n" +
+                                        "Verifique sua configuração da Groq.";
+
+                        break;
+
+
+                    // ==================================
+                    // LIMITE DA API
+                    // ==================================
+
+                    case "LIMITE_API":
+
+                        mensagemErro =
+                                "🚦 Limite da API atingido.\n\n" +
+                                        "Aguarde alguns instantes e tente novamente.";
+
+                        break;
+
+
+                    // ==================================
+                    // TIMEOUT
+                    // ==================================
+
+                    case "TIMEOUT":
+
+                        mensagemErro =
+                                "⏱️ A comunicação demorou muito.\n\n" +
+                                        "Tente enviar sua mensagem novamente.";
+
+                        break;
+
+
+                    // ==================================
+                    // SERVIDOR
+                    // ==================================
+
+                    case "SERVIDOR":
+
+                        mensagemErro =
+                                "🔧 O servidor da Groq está temporariamente indisponível.\n\n" +
+                                        "Tente novamente mais tarde.";
+
+                        break;
+
+
+                    // ==================================
+                    // COMUNICAÇÃO
+                    // ==================================
+
+                    case "COMUNICACAO":
+
+                        mensagemErro =
+                                "🔌 Não foi possível se comunicar com o servidor.\n\n" +
+                                        "Verifique sua conexão e tente novamente.";
+
+                        break;
+
+
+                    // ==================================
+                    // RESPOSTA INVÁLIDA
+                    // ==================================
+
+                    case "RESPOSTA_INVALIDA":
+
+                        mensagemErro =
+                                "⚠️ A resposta da IA não pôde ser processada.\n\n" +
+                                        "Tente enviar sua mensagem novamente.";
+
+                        break;
+
+
+                    // ==================================
+                    // ERRO DESCONHECIDO
+                    // ==================================
+
+                    default:
+
+                        mensagemErro =
+                                "❌ Ocorreu um erro inesperado.\n\n" +
+                                        "Tente novamente.";
+
+                        break;
+                }
+
+
+                String erroFinal =
+                        mensagemErro;
+
+
                 Platform.runLater(() -> {
 
                     removerDigitando();
 
                     adicionarMensagemIA(
-                            "Ocorreu um erro ao conversar com a IA:\n\n"
-                                    + e.getMessage()
+                            erroFinal
                     );
 
                     enviarButton.setDisable(

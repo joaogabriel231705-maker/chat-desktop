@@ -2,6 +2,8 @@ package com.example.chatdesktop.service;
 
 import com.example.chatdesktop.config.GroqConfig;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -29,55 +31,78 @@ public class GroqService {
             String mensagem
     ) throws Exception {
 
-        String json =
-                criarJson(mensagem);
+        try {
 
-        HttpRequest request =
-                HttpRequest.newBuilder()
-                        .uri(
-                                URI.create(
-                                        GroqConfig.GROQ_URL
-                                )
-                        )
-                        .timeout(
-                                Duration.ofSeconds(60)
-                        )
-                        .header(
-                                "Authorization",
-                                "Bearer " +
-                                        GroqConfig.getApiKey()
-                        )
-                        .header(
-                                "Content-Type",
-                                "application/json"
-                        )
-                        .POST(
-                                HttpRequest.BodyPublishers
-                                        .ofString(json)
-                        )
-                        .build();
+            String json =
+                    criarJson(mensagem);
 
-        HttpResponse<String> response =
-                httpClient.send(
-                        request,
-                        HttpResponse.BodyHandlers
-                                .ofString()
-                );
+            HttpRequest request =
+                    HttpRequest.newBuilder()
+                            .uri(
+                                    URI.create(
+                                            GroqConfig.GROQ_URL
+                                    )
+                            )
+                            .timeout(
+                                    Duration.ofSeconds(60)
+                            )
+                            .header(
+                                    "Authorization",
+                                    "Bearer " +
+                                            GroqConfig.getApiKey()
+                            )
+                            .header(
+                                    "Content-Type",
+                                    "application/json"
+                            )
+                            .POST(
+                                    HttpRequest.BodyPublishers
+                                            .ofString(json)
+                            )
+                            .build();
 
-        if (response.statusCode() < 200 ||
-                response.statusCode() >= 300) {
+            HttpResponse<String> response =
+                    httpClient.send(
+                            request,
+                            HttpResponse.BodyHandlers
+                                    .ofString()
+                    );
+
+            verificarErroHttp(
+                    response.statusCode(),
+                    response.body()
+            );
+
+            return extrairResposta(
+                    response.body()
+            );
+
+        } catch (ConnectException e) {
 
             throw new Exception(
-                    "Erro da API (" +
-                            response.statusCode() +
-                            "): " +
-                            response.body()
+                    "SEM_INTERNET"
+            );
+
+        } catch (java.net.http.HttpTimeoutException e) {
+
+            throw new Exception(
+                    "TIMEOUT"
+            );
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+
+            throw new Exception(
+                    "COMUNICACAO"
+            );
+
+        } catch (IOException e) {
+
+            throw new Exception(
+                    "COMUNICACAO"
             );
         }
-
-        return extrairResposta(
-                response.body()
-        );
     }
 
 
@@ -89,73 +114,169 @@ public class GroqService {
             String mensagem
     ) throws Exception {
 
-        String prompt =
-                "Crie um título curto para uma conversa " +
-                        "com base na mensagem abaixo. " +
-                        "O título deve ter no máximo 5 palavras. " +
-                        "Não use aspas, emojis ou pontuação. " +
-                        "Responda somente com o título.\n\n" +
-                        "Mensagem: " +
-                        mensagem;
+        try {
 
-        String json =
-                criarJson(prompt);
+            String prompt =
+                    "Crie um título curto para uma conversa " +
+                            "com base na mensagem abaixo. " +
+                            "O título deve ter no máximo 5 palavras. " +
+                            "Não use aspas, emojis ou pontuação. " +
+                            "Responda somente com o título.\n\n" +
+                            "Mensagem: " +
+                            mensagem;
 
-        HttpRequest request =
-                HttpRequest.newBuilder()
-                        .uri(
-                                URI.create(
-                                        GroqConfig.GROQ_URL
-                                )
-                        )
-                        .timeout(
-                                Duration.ofSeconds(30)
-                        )
-                        .header(
-                                "Authorization",
-                                "Bearer " +
-                                        GroqConfig.getApiKey()
-                        )
-                        .header(
-                                "Content-Type",
-                                "application/json"
-                        )
-                        .POST(
-                                HttpRequest.BodyPublishers
-                                        .ofString(json)
-                        )
-                        .build();
+            String json =
+                    criarJson(prompt);
 
-        HttpResponse<String> response =
-                httpClient.send(
-                        request,
-                        HttpResponse.BodyHandlers
-                                .ofString()
-                );
+            HttpRequest request =
+                    HttpRequest.newBuilder()
+                            .uri(
+                                    URI.create(
+                                            GroqConfig.GROQ_URL
+                                    )
+                            )
+                            .timeout(
+                                    Duration.ofSeconds(30)
+                            )
+                            .header(
+                                    "Authorization",
+                                    "Bearer " +
+                                            GroqConfig.getApiKey()
+                            )
+                            .header(
+                                    "Content-Type",
+                                    "application/json"
+                            )
+                            .POST(
+                                    HttpRequest.BodyPublishers
+                                            .ofString(json)
+                            )
+                            .build();
 
-        if (response.statusCode() < 200 ||
-                response.statusCode() >= 300) {
+            HttpResponse<String> response =
+                    httpClient.send(
+                            request,
+                            HttpResponse.BodyHandlers
+                                    .ofString()
+                    );
+
+            verificarErroHttp(
+                    response.statusCode(),
+                    response.body()
+            );
+
+            String titulo =
+                    extrairResposta(
+                            response.body()
+                    );
+
+            titulo = titulo.trim();
+
+            // Remove aspas caso a IA coloque
+            titulo = titulo
+                    .replace("\"", "")
+                    .replace("'", "");
+
+            return titulo;
+
+        } catch (ConnectException e) {
 
             throw new Exception(
-                    "Erro ao gerar título (" +
-                            response.statusCode() +
-                            ")"
+                    "SEM_INTERNET"
+            );
+
+        } catch (java.net.http.HttpTimeoutException e) {
+
+            throw new Exception(
+                    "TIMEOUT"
+            );
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+
+            throw new Exception(
+                    "COMUNICACAO"
+            );
+
+        } catch (IOException e) {
+
+            throw new Exception(
+                    "COMUNICACAO"
+            );
+        }
+    }
+
+
+    // ==========================================
+    // VERIFICAR ERROS HTTP
+    // ==========================================
+
+    private void verificarErroHttp(
+            int statusCode,
+            String body
+    ) throws Exception {
+
+        // ======================================
+        // CHAVE DA API INVÁLIDA
+        // ======================================
+
+        if (statusCode == 401) {
+
+            throw new Exception(
+                    "CHAVE_INVALIDA"
             );
         }
 
-        String titulo =
-                extrairResposta(
-                        response.body()
-                );
 
-        titulo = titulo.trim();
+        // ======================================
+        // SEM PERMISSÃO
+        // ======================================
 
-        // Remove aspas caso a IA coloque
-        titulo = titulo
-                .replace("\"", "")
-                .replace("'", "");
+        if (statusCode == 403) {
 
-        return titulo;
+            throw new Exception(
+                    "SEM_PERMISSAO"
+            );
+        }
+
+
+        // ======================================
+        // LIMITE DA API
+        // ======================================
+
+        if (statusCode == 429) {
+
+            throw new Exception(
+                    "LIMITE_API"
+            );
+        }
+
+
+        // ======================================
+        // ERRO DO SERVIDOR
+        // ======================================
+
+        if (statusCode >= 500 &&
+                statusCode <= 599) {
+
+            throw new Exception(
+                    "SERVIDOR"
+            );
+        }
+
+
+        // ======================================
+        // OUTROS ERROS
+        // ======================================
+
+        if (statusCode < 200 ||
+                statusCode >= 300) {
+
+            throw new Exception(
+                    "COMUNICACAO"
+            );
+        }
     }
 
 
@@ -200,8 +321,7 @@ public class GroqService {
         if (inicio == -1) {
 
             throw new Exception(
-                    "Não foi possível encontrar " +
-                            "a resposta da IA."
+                    "RESPOSTA_INVALIDA"
             );
         }
 
@@ -270,7 +390,7 @@ public class GroqService {
         }
 
         throw new Exception(
-                "Resposta da API inválida."
+                "RESPOSTA_INVALIDA"
         );
     }
 
