@@ -1,0 +1,9 @@
+NEXA TESTE RAG
+
+O projeto Nexa AI foi criado por João Gabriel.
+
+O animal escolhido para representar o projeto é o dragão azul.
+
+O código secreto deste documento é: NEXA-2026-RAG.
+
+A linguagem principal utilizada no projeto é Java.

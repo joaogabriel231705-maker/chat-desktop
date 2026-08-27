@@ -1,9 +1,11 @@
 package com.example.chatdesktop.Controller;
 
-import com.example.chatdesktop.service.GroqService;
+import com.example.chatdesktop.service.RagService;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
@@ -42,10 +44,10 @@ public class ChatController {
 
 
     /* ========================================= */
-    /* SERVIÇO DA IA */
+    /* SERVIÇO RAG */
     /* ========================================= */
 
-    private final GroqService groqService;
+    private final RagService ragService;
 
 
     /* ========================================= */
@@ -68,7 +70,7 @@ public class ChatController {
 
     public ChatController() {
 
-        groqService = new GroqService();
+        ragService = new RagService();
     }
 
 
@@ -83,10 +85,12 @@ public class ChatController {
                 event -> enviarMensagem()
         );
 
+
         mensagensContainer.heightProperty().addListener(
                 (observable, oldValue, newValue) ->
                         scrollPane.setVvalue(1.0)
         );
+
 
         carregarTemaEscuro();
     }
@@ -98,15 +102,21 @@ public class ChatController {
 
     private void carregarTemaEscuro() {
 
-        Scene scene = mensagensContainer.getScene();
+        Scene scene =
+                mensagensContainer.getScene();
+
 
         if (scene == null) {
+
             return;
         }
 
-        URL darkUrl = getClass().getResource(
-                "/com/example/chatdesktop/css/style.css"
-        );
+
+        URL darkUrl =
+                getClass().getResource(
+                        "/com/example/chatdesktop/css/style.css"
+                );
+
 
         if (darkUrl == null) {
 
@@ -117,11 +127,14 @@ public class ChatController {
             return;
         }
 
+
         scene.getStylesheets().clear();
+
 
         scene.getStylesheets().add(
                 darkUrl.toExternalForm()
         );
+
 
         temaClaro = false;
     }
@@ -134,7 +147,9 @@ public class ChatController {
     @FXML
     private void alternarTema() {
 
-        Scene scene = temaButton.getScene();
+        Scene scene =
+                temaButton.getScene();
+
 
         if (scene == null) {
 
@@ -145,13 +160,18 @@ public class ChatController {
             return;
         }
 
-        URL lightUrl = getClass().getResource(
-                "/com/example/chatdesktop/css/light.css"
-        );
 
-        URL darkUrl = getClass().getResource(
-                "/com/example/chatdesktop/css/style.css"
-        );
+        URL lightUrl =
+                getClass().getResource(
+                        "/com/example/chatdesktop/css/light.css"
+                );
+
+
+        URL darkUrl =
+                getClass().getResource(
+                        "/com/example/chatdesktop/css/style.css"
+                );
+
 
         if (lightUrl == null) {
 
@@ -162,6 +182,7 @@ public class ChatController {
             return;
         }
 
+
         if (darkUrl == null) {
 
             System.out.println(
@@ -171,11 +192,14 @@ public class ChatController {
             return;
         }
 
+
         String lightCss =
                 lightUrl.toExternalForm();
 
+
         String darkCss =
                 darkUrl.toExternalForm();
+
 
         scene.getStylesheets().clear();
 
@@ -190,16 +214,18 @@ public class ChatController {
                     lightCss
             );
 
+
             temaClaro = true;
 
+
             temaButton.setText("🌙");
+
 
             System.out.println(
                     "Tema claro ativado!"
             );
-
-
         }
+
 
         /* ------------------------------------- */
         /* TEMA ESCURO */
@@ -211,9 +237,12 @@ public class ChatController {
                     darkCss
             );
 
+
             temaClaro = false;
 
+
             temaButton.setText("☀");
+
 
             System.out.println(
                     "Tema escuro ativado!"
@@ -266,192 +295,232 @@ public class ChatController {
 
         mensagemField.clear();
 
+
         enviarButton.setDisable(true);
+
 
         adicionarDigitando();
 
 
-        String mensagemFinal = mensagem;
+        String mensagemFinal =
+                mensagem;
 
 
         /* ===================================== */
         /* THREAD DA IA */
         /* ===================================== */
 
-        Thread thread = new Thread(() -> {
+        Thread thread =
+                new Thread(() -> {
 
-            try {
+                    try {
 
-                String resposta =
-                        groqService.enviarMensagem(
-                                mensagemFinal
-                        );
+                        /*
+                         * AQUI ESTÁ A PRINCIPAL MUDANÇA.
+                         *
+                         * Antes:
+                         *
+                         * groqService.enviarMensagem(...)
+                         *
+                         * Agora:
+                         *
+                         * ragService.responder(...)
+                         *
+                         * O RagService decide:
+                         *
+                         * DOCUMENTO → RAG
+                         *
+                         * SEM DOCUMENTO → GROQ
+                         */
+
+                        String resposta =
+                                ragService.responder(
+                                        mensagemFinal
+                                );
 
 
-                Platform.runLater(() -> {
+                        Platform.runLater(() -> {
 
-                    removerDigitando();
+                            removerDigitando();
 
-                    adicionarMensagemIA(
-                            resposta
-                    );
 
-                    enviarButton.setDisable(
-                            false
-                    );
+                            adicionarMensagemIA(
+                                    resposta
+                            );
 
-                    mensagemField.requestFocus();
+
+                            enviarButton.setDisable(
+                                    false
+                            );
+
+
+                            mensagemField.requestFocus();
+                        });
+
+
+                    } catch (Exception e) {
+
+                        String mensagemErro;
+
+
+                        String erro =
+                                e.getMessage();
+
+
+                        if (erro == null) {
+
+                            erro = "";
+                        }
+
+
+                        switch (erro) {
+
+                            /* ============================== */
+                            /* SEM INTERNET */
+                            /* ============================== */
+
+                            case "SEM_INTERNET":
+
+                                mensagemErro =
+                                        "🌐 Sem conexão com a internet.\n\n" +
+                                                "Verifique sua conexão e tente novamente.";
+
+                                break;
+
+
+                            /* ============================== */
+                            /* CHAVE INVÁLIDA */
+                            /* ============================== */
+
+                            case "CHAVE_INVALIDA":
+
+                                mensagemErro =
+                                        "🔑 Chave da API inválida.\n\n" +
+                                                "Verifique a configuração da chave da Groq.";
+
+                                break;
+
+
+                            /* ============================== */
+                            /* SEM PERMISSÃO */
+                            /* ============================== */
+
+                            case "SEM_PERMISSAO":
+
+                                mensagemErro =
+                                        "🔒 A API não permitiu esta solicitação.\n\n" +
+                                                "Verifique sua configuração da Groq.";
+
+                                break;
+
+
+                            /* ============================== */
+                            /* LIMITE DA API */
+                            /* ============================== */
+
+                            case "LIMITE_API":
+
+                                mensagemErro =
+                                        "🚦 Limite da API atingido.\n\n" +
+                                                "Aguarde alguns instantes e tente novamente.";
+
+                                break;
+
+
+                            /* ============================== */
+                            /* TIMEOUT */
+                            /* ============================== */
+
+                            case "TIMEOUT":
+
+                                mensagemErro =
+                                        "⏱️ A comunicação demorou muito.\n\n" +
+                                                "Tente enviar sua mensagem novamente.";
+
+                                break;
+
+
+                            /* ============================== */
+                            /* SERVIDOR */
+                            /* ============================== */
+
+                            case "SERVIDOR":
+
+                                mensagemErro =
+                                        "🔧 O servidor da Groq está temporariamente indisponível.\n\n" +
+                                                "Tente novamente mais tarde.";
+
+                                break;
+
+
+                            /* ============================== */
+                            /* COMUNICAÇÃO */
+                            /* ============================== */
+
+                            case "COMUNICACAO":
+
+                                mensagemErro =
+                                        "🔌 Não foi possível se comunicar com o servidor.\n\n" +
+                                                "Verifique sua conexão e tente novamente.";
+
+                                break;
+
+
+                            /* ============================== */
+                            /* RESPOSTA INVÁLIDA */
+                            /* ============================== */
+
+                            case "RESPOSTA_INVALIDA":
+
+                                mensagemErro =
+                                        "⚠️ A resposta da IA não pôde ser processada.\n\n" +
+                                                "Tente enviar sua mensagem novamente.";
+
+                                break;
+
+
+                            /* ============================== */
+                            /* ERRO DESCONHECIDO */
+                            /* ============================== */
+
+                            default:
+
+                                mensagemErro =
+                                        "❌ Ocorreu um erro inesperado.\n\n" +
+                                                "Tente novamente.";
+
+                                break;
+                        }
+
+
+                        String erroFinal =
+                                mensagemErro;
+
+
+                        Platform.runLater(() -> {
+
+                            removerDigitando();
+
+
+                            adicionarMensagemIA(
+                                    erroFinal
+                            );
+
+
+                            enviarButton.setDisable(
+                                    false
+                            );
+
+
+                            mensagemField.requestFocus();
+                        });
+                    }
+
                 });
-
-
-            } catch (Exception e) {
-
-                String mensagemErro;
-
-                switch (e.getMessage()) {
-
-                    // ==================================
-                    // SEM INTERNET
-                    // ==================================
-
-                    case "SEM_INTERNET":
-
-                        mensagemErro =
-                                "🌐 Sem conexão com a internet.\n\n" +
-                                        "Verifique sua conexão e tente novamente.";
-
-                        break;
-
-
-                    // ==================================
-                    // CHAVE INVÁLIDA
-                    // ==================================
-
-                    case "CHAVE_INVALIDA":
-
-                        mensagemErro =
-                                "🔑 Chave da API inválida.\n\n" +
-                                        "Verifique a configuração da chave da Groq.";
-
-                        break;
-
-
-                    // ==================================
-                    // SEM PERMISSÃO
-                    // ==================================
-
-                    case "SEM_PERMISSAO":
-
-                        mensagemErro =
-                                "🔒 A API não permitiu esta solicitação.\n\n" +
-                                        "Verifique sua configuração da Groq.";
-
-                        break;
-
-
-                    // ==================================
-                    // LIMITE DA API
-                    // ==================================
-
-                    case "LIMITE_API":
-
-                        mensagemErro =
-                                "🚦 Limite da API atingido.\n\n" +
-                                        "Aguarde alguns instantes e tente novamente.";
-
-                        break;
-
-
-                    // ==================================
-                    // TIMEOUT
-                    // ==================================
-
-                    case "TIMEOUT":
-
-                        mensagemErro =
-                                "⏱️ A comunicação demorou muito.\n\n" +
-                                        "Tente enviar sua mensagem novamente.";
-
-                        break;
-
-
-                    // ==================================
-                    // SERVIDOR
-                    // ==================================
-
-                    case "SERVIDOR":
-
-                        mensagemErro =
-                                "🔧 O servidor da Groq está temporariamente indisponível.\n\n" +
-                                        "Tente novamente mais tarde.";
-
-                        break;
-
-
-                    // ==================================
-                    // COMUNICAÇÃO
-                    // ==================================
-
-                    case "COMUNICACAO":
-
-                        mensagemErro =
-                                "🔌 Não foi possível se comunicar com o servidor.\n\n" +
-                                        "Verifique sua conexão e tente novamente.";
-
-                        break;
-
-
-                    // ==================================
-                    // RESPOSTA INVÁLIDA
-                    // ==================================
-
-                    case "RESPOSTA_INVALIDA":
-
-                        mensagemErro =
-                                "⚠️ A resposta da IA não pôde ser processada.\n\n" +
-                                        "Tente enviar sua mensagem novamente.";
-
-                        break;
-
-
-                    // ==================================
-                    // ERRO DESCONHECIDO
-                    // ==================================
-
-                    default:
-
-                        mensagemErro =
-                                "❌ Ocorreu um erro inesperado.\n\n" +
-                                        "Tente novamente.";
-
-                        break;
-                }
-
-
-                String erroFinal =
-                        mensagemErro;
-
-
-                Platform.runLater(() -> {
-
-                    removerDigitando();
-
-                    adicionarMensagemIA(
-                            erroFinal
-                    );
-
-                    enviarButton.setDisable(
-                            false
-                    );
-
-                    mensagemField.requestFocus();
-                });
-            }
-
-        });
 
 
         thread.setDaemon(true);
+
 
         thread.start();
     }
@@ -461,38 +530,62 @@ public class ChatController {
     /* GERAR TÍTULO DA CONVERSA */
     /* ========================================= */
 
-    private void gerarTituloConversa(String mensagem) {
+    private void gerarTituloConversa(
+            String mensagem
+    ) {
 
         if (conversaAtualButton == null) {
+
             return;
         }
 
-        String titulo = mensagem.trim();
 
-        // Remove quebras de linha
-        titulo = titulo.replace("\n", " ");
-        titulo = titulo.replace("\r", " ");
+        String titulo =
+                mensagem.trim();
 
-        // Remove espaços duplicados
-        titulo = titulo.replaceAll("\\s+", " ");
 
-        // Limita o tamanho
+        titulo =
+                titulo.replace(
+                        "\n",
+                        " "
+                );
+
+
+        titulo =
+                titulo.replace(
+                        "\r",
+                        " "
+                );
+
+
+        titulo =
+                titulo.replaceAll(
+                        "\\s+",
+                        " "
+                );
+
+
         if (titulo.length() > 30) {
 
-            titulo = titulo
-                    .substring(0, 30)
-                    .trim();
+            titulo =
+                    titulo.substring(
+                            0,
+                            30
+                    ).trim();
+
 
             titulo += "...";
         }
 
-        // ALTERA SOMENTE O BOTÃO DA CONVERSA
+
         conversaAtualButton.setText(
                 "💬  " + titulo
         );
 
+
         System.out.println(
-                "Título da conversa: " + titulo
+                "Título da conversa: " +
+                        titulo
         );
     }
 
@@ -617,42 +710,49 @@ public class ChatController {
         );
 
 
-        copiarButton.setOnAction(event -> {
+        copiarButton.setOnAction(
+                event -> {
 
-            copiarTexto(resposta);
-
-
-            copiarButton.setText(
-                    "✓  Copiado!"
-            );
+                    copiarTexto(
+                            resposta
+                    );
 
 
-            Thread thread =
-                    new Thread(() -> {
-
-                        try {
-
-                            Thread.sleep(1500);
-
-                        } catch (
-                                InterruptedException ignored
-                        ) {
-                        }
+                    copiarButton.setText(
+                            "✓  Copiado!"
+                    );
 
 
-                        Platform.runLater(() ->
-                                copiarButton.setText(
-                                        "📋  Copiar"
-                                )
-                        );
+                    Thread thread =
+                            new Thread(() -> {
 
-                    });
+                                try {
+
+                                    Thread.sleep(
+                                            1500
+                                    );
+
+                                } catch (
+                                        InterruptedException ignored
+                                ) {
+                                }
 
 
-            thread.setDaemon(true);
+                                Platform.runLater(
+                                        () ->
+                                                copiarButton.setText(
+                                                        "📋  Copiar"
+                                                )
+                                );
+                            });
 
-            thread.start();
-        });
+
+                    thread.setDaemon(true);
+
+
+                    thread.start();
+                }
+        );
 
 
         HBox botoes =
@@ -711,10 +811,14 @@ public class ChatController {
                 new ClipboardContent();
 
 
-        content.putString(texto);
+        content.putString(
+                texto
+        );
 
 
-        clipboard.setContent(content);
+        clipboard.setContent(
+                content
+        );
     }
 
 
@@ -760,6 +864,10 @@ public class ChatController {
     }
 
 
+    /* ========================================= */
+    /* REMOVER DIGITANDO */
+    /* ========================================= */
+
     private void removerDigitando() {
 
         mensagensContainer
@@ -785,12 +893,8 @@ public class ChatController {
                 .clear();
 
 
-        /* Permite gerar novo título */
-
         tituloGerado = false;
 
-
-        /* Volta título do topo */
 
         if (chatTitle != null) {
 
@@ -799,8 +903,6 @@ public class ChatController {
             );
         }
 
-
-        /* Volta título da sidebar */
 
         if (conversaAtualButton != null) {
 
@@ -814,6 +916,7 @@ public class ChatController {
 
 
         mensagemField.clear();
+
 
         mensagemField.requestFocus();
     }
@@ -869,7 +972,9 @@ public class ChatController {
         );
 
 
-        inicio.setSpacing(12);
+        inicio.setSpacing(
+                12
+        );
 
 
         inicio.getStyleClass().add(
