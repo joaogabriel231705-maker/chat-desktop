@@ -65,6 +65,13 @@ public class ChatController {
 
 
     /* ========================================= */
+    /* ÚLTIMA PERGUNTA */
+    /* ========================================= */
+
+    private String ultimaPergunta = null;
+
+
+    /* ========================================= */
     /* CONSTRUTOR */
     /* ========================================= */
 
@@ -273,6 +280,13 @@ public class ChatController {
 
 
         /* ===================================== */
+        /* SALVA A ÚLTIMA PERGUNTA */
+        /* ===================================== */
+
+        ultimaPergunta = mensagem;
+
+
+        /* ===================================== */
         /* PRIMEIRA MENSAGEM */
         /* ===================================== */
 
@@ -316,16 +330,6 @@ public class ChatController {
                     try {
 
                         /*
-                         * AQUI ESTÁ A PRINCIPAL MUDANÇA.
-                         *
-                         * Antes:
-                         *
-                         * groqService.enviarMensagem(...)
-                         *
-                         * Agora:
-                         *
-                         * ragService.responder(...)
-                         *
                          * O RagService decide:
                          *
                          * DOCUMENTO → RAG
@@ -527,6 +531,154 @@ public class ChatController {
 
 
     /* ========================================= */
+    /* REGENERAR RESPOSTA */
+    /* ========================================= */
+
+    private void regenerarResposta() {
+
+        if (ultimaPergunta == null ||
+                ultimaPergunta.isBlank()) {
+
+            return;
+        }
+
+
+        /*
+         * Remove a última resposta da IA
+         * antes de gerar uma nova.
+         */
+
+        removerUltimaMensagemIA();
+
+
+        enviarButton.setDisable(true);
+
+
+        adicionarDigitando();
+
+
+        String pergunta =
+                ultimaPergunta;
+
+
+        Thread thread =
+                new Thread(() -> {
+
+                    try {
+
+                        String novaResposta =
+                                ragService.responder(
+                                        pergunta
+                                );
+
+
+                        Platform.runLater(() -> {
+
+                            removerDigitando();
+
+
+                            adicionarMensagemIA(
+                                    novaResposta
+                            );
+
+
+                            enviarButton.setDisable(
+                                    false
+                            );
+
+
+                            mensagemField.requestFocus();
+                        });
+
+
+                    } catch (Exception e) {
+
+                        Platform.runLater(() -> {
+
+                            removerDigitando();
+
+
+                            adicionarMensagemIA(
+                                    "❌ Não foi possível regenerar a resposta.\n\n" +
+                                            "Tente novamente."
+                            );
+
+
+                            enviarButton.setDisable(
+                                    false
+                            );
+
+
+                            mensagemField.requestFocus();
+                        });
+                    }
+
+                });
+
+
+        thread.setDaemon(true);
+
+
+        thread.start();
+    }
+
+
+    /* ========================================= */
+    /* REMOVER ÚLTIMA MENSAGEM DA IA */
+    /* ========================================= */
+
+    private void removerUltimaMensagemIA() {
+
+        for (
+                int i = mensagensContainer.getChildren().size() - 1;
+                i >= 0;
+                i--
+        ) {
+
+            javafx.scene.Node node =
+                    mensagensContainer.getChildren().get(i);
+
+
+            if (
+                    node instanceof HBox &&
+                            node.getStyleClass().contains(
+                                    "message-row"
+                            )
+            ) {
+
+                HBox linha =
+                        (HBox) node;
+
+
+                if (
+                        !linha.getChildren().isEmpty() &&
+                                linha.getChildren().get(0) instanceof VBox
+                ) {
+
+                    VBox caixa =
+                            (VBox) linha.getChildren().get(0);
+
+
+                    if (
+                            caixa.getStyleClass().contains(
+                                    "ai-message-container"
+                            )
+                    ) {
+
+                        mensagensContainer
+                                .getChildren()
+                                .remove(i);
+
+
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
+    /* ========================================= */
     /* GERAR TÍTULO DA CONVERSA */
     /* ========================================= */
 
@@ -699,6 +851,10 @@ public class ChatController {
         );
 
 
+        /* ===================================== */
+        /* BOTÃO COPIAR */
+        /* ===================================== */
+
         Button copiarButton =
                 new Button(
                         "📋  Copiar"
@@ -755,8 +911,34 @@ public class ChatController {
         );
 
 
+        /* ===================================== */
+        /* BOTÃO REGENERAR */
+        /* ===================================== */
+
+        Button regenerarButton =
+                new Button(
+                        "↻  Regenerar"
+                );
+
+
+        regenerarButton.getStyleClass().add(
+                "regenerate-button"
+        );
+
+
+        regenerarButton.setOnAction(
+                event -> regenerarResposta()
+        );
+
+
+        /* ===================================== */
+        /* CONTAINER DOS BOTÕES */
+        /* ===================================== */
+
         HBox botoes =
                 new HBox(
+                        10,
+                        regenerarButton,
                         copiarButton
                 );
 
@@ -896,6 +1078,9 @@ public class ChatController {
         tituloGerado = false;
 
 
+        ultimaPergunta = null;
+
+
         if (chatTitle != null) {
 
             chatTitle.setText(
@@ -935,6 +1120,9 @@ public class ChatController {
 
 
         tituloGerado = false;
+
+
+        ultimaPergunta = null;
 
 
         if (chatTitle != null) {

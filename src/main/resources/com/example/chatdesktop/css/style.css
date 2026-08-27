@@ -518,3 +518,15 @@
 
  -fx-border-color: #287dff;
 }
+.regenerate-button {
+ -fx-background-color: transparent;
+ -fx-text-fill: #9aa3b2;
+ -fx-border-color: transparent;
+ -fx-cursor: hand;
+ -fx-font-size: 12px;
+}
+
+.regenerate-button:hover {
+ -fx-text-fill: #ffffff;
+ -fx-background-color: #252a34;
+}

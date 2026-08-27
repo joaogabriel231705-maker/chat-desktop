@@ -222,3 +222,15 @@
 .light-theme .theme-button:hover {
     -fx-background-color: #dceaff;
 }
+.regenerate-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #667085;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.regenerate-button:hover {
+    -fx-text-fill: #171a21;
+    -fx-background-color: #e9edf5;
+}
