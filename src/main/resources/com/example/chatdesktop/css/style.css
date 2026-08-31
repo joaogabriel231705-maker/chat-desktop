@@ -3,9 +3,7 @@
 /* ========================================= */
 
 .root {
-
  -fx-background-color: #050d1c;
-
 }
 
 
@@ -14,96 +12,222 @@
 /* ========================================= */
 
 .sidebar {
-
  -fx-background-color: #071426;
-
  -fx-border-color: #142b49;
-
  -fx-border-width: 0 1 0 0;
-
 }
 
 
 .logo {
-
  -fx-text-fill: white;
-
  -fx-font-size: 21px;
-
  -fx-font-weight: bold;
-
 }
 
 
 .logo-subtitle {
-
  -fx-text-fill: #347fff;
-
  -fx-font-size: 11px;
-
  -fx-font-weight: bold;
-
  -fx-letter-spacing: 3px;
-
 }
 
 
 .section-title {
-
  -fx-text-fill: #506987;
-
  -fx-font-size: 10px;
-
  -fx-font-weight: bold;
-
 }
 
 
+/* ========================================= */
+/* NOVA CONVERSA */
+/* ========================================= */
+
 .new-chat-button {
-
  -fx-background-color: #1769e0;
-
  -fx-text-fill: white;
-
  -fx-font-size: 13px;
-
  -fx-font-weight: bold;
-
  -fx-background-radius: 9;
-
  -fx-padding: 12px;
-
  -fx-cursor: hand;
-
 }
 
 
 .new-chat-button:hover {
-
  -fx-background-color: #2780ff;
-
 }
 
 
+.new-chat-button:pressed {
+ -fx-background-color: #0e54b9;
+}
+
+
+/* ========================================= */
+/* HISTÓRICO LATERAL */
+/* ========================================= */
+
+.history-scroll {
+ -fx-background-color: transparent;
+ -fx-background-insets: 0;
+ -fx-border-color: transparent;
+}
+
+
+.history-scroll > .viewport {
+ -fx-background-color: transparent;
+}
+
+
+.history-scroll .content {
+ -fx-background-color: transparent;
+}
+
+
+.history-container {
+ -fx-background-color: transparent;
+}
+
+
+.history-item {
+ -fx-background-color: transparent;
+ -fx-padding: 0;
+ -fx-spacing: 4;
+}
+
+
+/* ========================================= */
+/* BOTÃO DA CONVERSA */
+/* ========================================= */
+
 .conversation-button {
-
  -fx-background-color: #102641;
-
  -fx-text-fill: #c4d8f4;
 
  -fx-font-size: 12px;
 
  -fx-alignment: CENTER_LEFT;
 
- -fx-background-radius: 8;
+ -fx-background-radius: 9;
+ -fx-border-radius: 9;
 
- -fx-padding: 11px;
+ -fx-border-color: transparent;
 
+ -fx-padding: 10px 12px;
+
+ -fx-cursor: hand;
 }
 
 
-.sidebar-button {
+.conversation-button:hover {
+ -fx-background-color: #183555;
+ -fx-text-fill: white;
+}
 
+
+.conversation-button:pressed {
+ -fx-background-color: #1d4269;
+}
+
+
+/* ========================================= */
+/* BOTÃO EDITAR CONVERSA */
+/* ========================================= */
+
+.edit-conversation-button {
+ -fx-background-color: transparent;
+
+ -fx-text-fill: #7185a0;
+
+ -fx-font-size: 13px;
+
+ -fx-background-radius: 8;
+ -fx-border-radius: 8;
+
+ -fx-border-color: transparent;
+
+ -fx-padding: 7px;
+
+ -fx-min-width: 32px;
+ -fx-min-height: 32px;
+
+ -fx-max-width: 32px;
+ -fx-max-height: 32px;
+
+ -fx-cursor: hand;
+}
+
+
+/* ========================================= */
+/* HOVER EDITAR */
+/* ========================================= */
+
+.edit-conversation-button:hover {
+ -fx-background-color: #17345a;
+
+ -fx-text-fill: #5fa2ff;
+
+ -fx-border-color: #24558c;
+}
+
+
+/* ========================================= */
+/* BOTÃO EXCLUIR CONVERSA */
+/* ========================================= */
+
+.delete-conversation-button {
+ -fx-background-color: transparent;
+
+ -fx-text-fill: #718196;
+
+ -fx-font-size: 13px;
+
+ -fx-background-radius: 8;
+ -fx-border-radius: 8;
+
+ -fx-border-color: transparent;
+
+ -fx-padding: 7px;
+
+ -fx-min-width: 32px;
+ -fx-min-height: 32px;
+
+ -fx-max-width: 32px;
+ -fx-max-height: 32px;
+
+ -fx-cursor: hand;
+}
+
+
+/* ========================================= */
+/* HOVER EXCLUIR */
+/* ========================================= */
+
+.delete-conversation-button:hover {
+ -fx-background-color: #3a1f27;
+
+ -fx-text-fill: #ff6b6b;
+
+ -fx-border-color: #6b2d39;
+}
+
+
+/* ========================================= */
+/* PRESSIONADO EXCLUIR */
+/* ========================================= */
+
+.delete-conversation-button:pressed {
+ -fx-background-color: #55232e;
+}
+
+
+/* ========================================= */
+/* BOTÕES DA SIDEBAR */
+/* ========================================= */
+
+.sidebar-button {
  -fx-background-color: transparent;
 
  -fx-text-fill: #7189a9;
@@ -115,25 +239,19 @@
  -fx-padding: 10px;
 
  -fx-cursor: hand;
-
 }
 
 
 .sidebar-button:hover {
-
  -fx-background-color: #10233d;
 
  -fx-text-fill: white;
-
 }
 
 
 .sidebar-footer {
-
  -fx-text-fill: #304866;
-
  -fx-font-size: 10px;
-
 }
 
 
@@ -142,42 +260,34 @@
 /* ========================================= */
 
 .topbar {
-
  -fx-background-color: #071426;
 
  -fx-border-color: #142b49;
 
  -fx-border-width: 0 0 1 0;
-
 }
 
 
 .chat-title {
-
  -fx-text-fill: white;
 
  -fx-font-size: 17px;
 
  -fx-font-weight: bold;
-
 }
 
 
 .online-dot {
-
  -fx-text-fill: #22d98b;
 
  -fx-font-size: 9px;
-
 }
 
 
 .online-text {
-
  -fx-text-fill: #6883a6;
 
  -fx-font-size: 11px;
-
 }
 
 
@@ -186,25 +296,19 @@
 /* ========================================= */
 
 .chat-scroll {
-
  -fx-background-color: #050d1c;
 
  -fx-background: #050d1c;
-
 }
 
 
 .chat-scroll > .viewport {
-
  -fx-background-color: #050d1c;
-
 }
 
 
 .messages-container {
-
  -fx-background-color: #050d1c;
-
 }
 
 
@@ -213,14 +317,15 @@
 /* ========================================= */
 
 .message-row {
-
  -fx-padding: 2px;
-
 }
 
 
-.user-message-container {
+/* ========================================= */
+/* MENSAGEM DO USUÁRIO */
+/* ========================================= */
 
+.user-message-container {
  -fx-background-color: #1769e0;
 
  -fx-background-radius: 14px 14px 3px 14px;
@@ -228,32 +333,30 @@
  -fx-padding: 13px 17px;
 
  -fx-max-width: 600px;
-
 }
 
 
 .message-name {
-
  -fx-text-fill: #a9c9ff;
 
  -fx-font-size: 10px;
 
  -fx-font-weight: bold;
-
 }
 
 
 .user-message {
-
  -fx-text-fill: white;
 
  -fx-font-size: 14px;
-
 }
 
 
-.ai-message-container {
+/* ========================================= */
+/* MENSAGEM DA IA */
+/* ========================================= */
 
+.ai-message-container {
  -fx-background-color: #0b1b31;
 
  -fx-border-color: #183b62;
@@ -267,29 +370,24 @@
  -fx-padding: 16px 18px;
 
  -fx-max-width: 700px;
-
 }
 
 
 .ai-name {
-
  -fx-text-fill: #4b91ff;
 
  -fx-font-size: 12px;
 
  -fx-font-weight: bold;
-
 }
 
 
 .ai-message {
-
  -fx-text-fill: #d9e6f7;
 
  -fx-font-size: 14px;
 
  -fx-line-spacing: 3px;
-
 }
 
 
@@ -298,7 +396,6 @@
 /* ========================================= */
 
 .copy-button {
-
  -fx-background-color: #102943;
 
  -fx-text-fill: #7fa7d8;
@@ -314,16 +411,39 @@
  -fx-font-size: 11px;
 
  -fx-cursor: hand;
-
 }
 
 
 .copy-button:hover {
-
  -fx-background-color: #17406b;
 
  -fx-text-fill: white;
+}
 
+
+/* ========================================= */
+/* REGENERAR */
+/* ========================================= */
+
+.regenerate-button {
+ -fx-background-color: transparent;
+
+ -fx-text-fill: #9aa3b2;
+
+ -fx-border-color: transparent;
+
+ -fx-cursor: hand;
+
+ -fx-font-size: 12px;
+
+ -fx-background-radius: 7;
+}
+
+
+.regenerate-button:hover {
+ -fx-text-fill: #ffffff;
+
+ -fx-background-color: #252a34;
 }
 
 
@@ -332,22 +452,18 @@
 /* ========================================= */
 
 .typing-container {
-
  -fx-background-color: #0b1b31;
 
  -fx-background-radius: 10;
 
  -fx-padding: 11px 15px;
-
 }
 
 
 .typing-text {
-
  -fx-text-fill: #5c83b2;
 
  -fx-font-size: 12px;
-
 }
 
 
@@ -356,38 +472,30 @@
 /* ========================================= */
 
 .welcome-container {
-
  -fx-padding: 100px 20px;
-
 }
 
 
 .welcome-icon {
-
  -fx-text-fill: #3d8cff;
 
  -fx-font-size: 42px;
-
 }
 
 
 .welcome-title {
-
  -fx-text-fill: white;
 
  -fx-font-size: 28px;
 
  -fx-font-weight: bold;
-
 }
 
 
 .welcome-description {
-
  -fx-text-fill: #6683a7;
 
  -fx-font-size: 14px;
-
 }
 
 
@@ -396,18 +504,15 @@
 /* ========================================= */
 
 .input-area {
-
  -fx-background-color: #071426;
 
  -fx-border-color: #142b49;
 
  -fx-border-width: 1 0 0 0;
-
 }
 
 
 .message-field {
-
  -fx-background-color: #0b1d34;
 
  -fx-text-fill: white;
@@ -423,19 +528,19 @@
  -fx-border-radius: 12px;
 
  -fx-padding: 13px 15px;
-
 }
 
 
 .message-field:focused {
-
  -fx-border-color: #287dff;
-
 }
 
 
-.send-button {
+/* ========================================= */
+/* BOTÃO ENVIAR */
+/* ========================================= */
 
+.send-button {
  -fx-background-color: #1769e0;
 
  -fx-text-fill: white;
@@ -451,28 +556,21 @@
  -fx-min-height: 45px;
 
  -fx-cursor: hand;
-
 }
 
 
 .send-button:hover {
-
  -fx-background-color: #2b82ff;
-
 }
 
 
 .send-button:pressed {
-
  -fx-background-color: #0e54b9;
-
 }
 
 
 .send-button:disabled {
-
  -fx-opacity: 0.45;
-
 }
 
 
@@ -481,131 +579,48 @@
 /* ========================================= */
 
 .disclaimer {
-
  -fx-text-fill: #344d6a;
 
  -fx-font-size: 9px;
 
  -fx-alignment: CENTER;
-
-
 }
+
+
 /* ========================================= */
 /* BOTÃO DE TEMA */
 /* ========================================= */
 
 .theme-button {
-
  -fx-background-color: #102943;
+
  -fx-text-fill: #8db8ed;
 
  -fx-border-color: #23486f;
+
  -fx-border-width: 1px;
 
  -fx-background-radius: 9px;
+
  -fx-border-radius: 9px;
 
  -fx-font-size: 15px;
+
  -fx-padding: 7px 10px;
 
  -fx-cursor: hand;
 }
 
-.theme-button:hover {
 
+.theme-button:hover {
  -fx-background-color: #17406b;
+
  -fx-text-fill: white;
 
  -fx-border-color: #287dff;
 }
-.regenerate-button {
- -fx-background-color: transparent;
- -fx-text-fill: #9aa3b2;
- -fx-border-color: transparent;
- -fx-cursor: hand;
- -fx-font-size: 12px;
-}
-
-.regenerate-button:hover {
- -fx-text-fill: #ffffff;
- -fx-background-color: #252a34;
-}
-/* ========================================= */
-/* HISTÓRICO LATERAL */
-/* ========================================= */
-
-.history-scroll {
- -fx-background-color: transparent;
- -fx-background-insets: 0;
- -fx-border-color: transparent;
-}
-
-.history-scroll > .viewport {
- -fx-background-color: transparent;
-}
-
-.history-scroll .content {
- -fx-background-color: transparent;
-}
-
-.history-container {
- -fx-background-color: transparent;
-}
-/* ========================================= */
-/* ITEM DO HISTÓRICO */
-/* ========================================= */
-
-.history-item {
- -fx-background-color: transparent;
- -fx-padding: 0;
-}
 
 
-/* ========================================= */
-/* BOTÃO DE EXCLUIR CONVERSA */
-/* ========================================= */
-
-.delete-conversation-button {
- -fx-background-color: transparent;
- -fx-text-fill: #8b9bb0;
- -fx-font-size: 13px;
- -fx-background-radius: 8;
- -fx-border-color: transparent;
- -fx-padding: 8px 7px;
- -fx-cursor: hand;
-}
-
-
-/* ========================================= */
-/* HOVER DO BOTÃO EXCLUIR */
-/* ========================================= */
-
-.delete-conversation-button:hover {
- -fx-background-color: #3a1f27;
- -fx-text-fill: #ff6b6b;
-}
-
-
-/* ========================================= */
-/* CONVERSA DO HISTÓRICO */
-/* ========================================= */
-
-.conversation-button {
- -fx-background-color: #142b45;
- -fx-text-fill: #ffffff;
- -fx-font-size: 13px;
- -fx-alignment: CENTER_LEFT;
- -fx-background-radius: 8;
- -fx-border-color: transparent;
- -fx-padding: 10px;
- -fx-cursor: hand;
-}
-
-
-/* ========================================= */
-/* HOVER DA CONVERSA */
-/* ========================================= */
-
-.conversation-button:hover {
- -fx-background-color: #1d3b5d;
+.theme-button:pressed {
+ -fx-background-color: #0d2037;
 }

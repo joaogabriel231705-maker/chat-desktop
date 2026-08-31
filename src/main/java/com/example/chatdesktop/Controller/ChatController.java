@@ -99,7 +99,9 @@ public class ChatController {
         /*
          * Cria a primeira conversa.
          */
-        conversaAtual = new Conversa();
+
+        conversaAtual =
+                new Conversa();
     }
 
 
@@ -127,12 +129,14 @@ public class ChatController {
         /*
          * Mostra a tela inicial.
          */
+
         mostrarMensagemInicial();
 
 
         /*
          * O histórico começa vazio.
          */
+
         atualizarHistorico();
     }
 
@@ -342,9 +346,18 @@ public class ChatController {
 
         if (!tituloGerado) {
 
-            gerarTituloConversa(
-                    mensagem
-            );
+            /*
+             * Só gera automaticamente o título
+             * se o usuário ainda não tiver
+             * colocado um título manual.
+             */
+
+            if (!conversaAtual.tituloEditado) {
+
+                gerarTituloConversa(
+                        mensagem
+                );
+            }
 
 
             tituloGerado = true;
@@ -938,17 +951,20 @@ public class ChatController {
          * para a mais antiga.
          */
 
-        for (Conversa conversa : conversas) {
+        for (Conversa conversa :
+                conversas) {
 
             /* ================================= */
-            /* LINHA */
+            /* LINHA DA CONVERSA */
             /* ================================= */
 
             HBox linha =
                     new HBox();
 
 
-            linha.setSpacing(4);
+            linha.setSpacing(
+                    4
+            );
 
 
             linha.setAlignment(
@@ -975,7 +991,8 @@ public class ChatController {
 
 
             botaoConversa.setText(
-                    "💬  " + conversa.titulo
+                    "💬  " +
+                            conversa.titulo
             );
 
 
@@ -989,13 +1006,21 @@ public class ChatController {
             );
 
 
+            botaoConversa.setTooltip(
+                    new Tooltip(
+                            "Abrir conversa"
+                    )
+            );
+
+
             botaoConversa.getStyleClass().add(
                     "conversation-button"
             );
 
 
             /*
-             * Faz o botão ocupar o espaço.
+             * Faz o botão ocupar todo o espaço
+             * disponível.
              */
 
             HBox.setHgrow(
@@ -1005,12 +1030,47 @@ public class ChatController {
 
 
             /*
-             * Abre a conversa ao clicar.
+             * Abre a conversa.
              */
 
             botaoConversa.setOnAction(
                     event ->
                             abrirConversa(
+                                    conversa
+                            )
+            );
+
+
+            /* ================================= */
+            /* BOTÃO EDITAR TÍTULO */
+            /* ================================= */
+
+            Button editarButton =
+                    new Button(
+                            "✏️"
+                    );
+
+
+            editarButton.setMnemonicParsing(
+                    false
+            );
+
+
+            editarButton.setTooltip(
+                    new Tooltip(
+                            "Editar título"
+                    )
+            );
+
+
+            editarButton.getStyleClass().add(
+                    "edit-conversation-button"
+            );
+
+
+            editarButton.setOnAction(
+                    event ->
+                            editarTituloConversa(
                                     conversa
                             )
             );
@@ -1043,10 +1103,6 @@ public class ChatController {
             );
 
 
-            /*
-             * Remove somente aquela conversa.
-             */
-
             removerButton.setOnAction(
                     event ->
                             removerConversa(
@@ -1061,6 +1117,7 @@ public class ChatController {
 
             linha.getChildren().addAll(
                     botaoConversa,
+                    editarButton,
                     removerButton
             );
 
@@ -1079,6 +1136,194 @@ public class ChatController {
 
 
     /* ========================================= */
+    /* EDITAR TÍTULO DA CONVERSA */
+    /* ========================================= */
+
+    private void editarTituloConversa(
+            Conversa conversa
+    ) {
+
+        /*
+         * Cria uma caixa de diálogo.
+         */
+
+        TextInputDialog dialog =
+                new TextInputDialog(
+                        conversa.titulo
+                );
+
+
+        dialog.setTitle(
+                "Editar conversa"
+        );
+
+
+        dialog.setHeaderText(
+                "Editar título da conversa"
+        );
+
+
+        dialog.setContentText(
+                "Novo título:"
+        );
+
+
+        /*
+         * Pega o campo de texto da janela.
+         */
+
+        TextField campo =
+                dialog.getEditor();
+
+
+        /*
+         * Seleciona o título atual
+         * para facilitar a substituição.
+         */
+
+        campo.selectAll();
+
+
+        /*
+         * Mostra a janela e espera
+         * o usuário decidir.
+         */
+
+        dialog.showAndWait().ifPresent(
+                novoTitulo -> {
+
+                    novoTitulo =
+                            novoTitulo.trim();
+
+
+                    /*
+                     * Não permite título vazio.
+                     */
+
+                    if (novoTitulo.isBlank()) {
+
+                        Alert alerta =
+                                new Alert(
+                                        Alert.AlertType.WARNING
+                                );
+
+
+                        alerta.setTitle(
+                                "Título inválido"
+                        );
+
+
+                        alerta.setHeaderText(
+                                null
+                        );
+
+
+                        alerta.setContentText(
+                                "O título não pode ficar vazio."
+                        );
+
+
+                        alerta.showAndWait();
+
+
+                        return;
+                    }
+
+
+                    /*
+                     * Limpa quebras de linha.
+                     */
+
+                    novoTitulo =
+                            novoTitulo.replace(
+                                    "\n",
+                                    " "
+                            );
+
+
+                    novoTitulo =
+                            novoTitulo.replace(
+                                    "\r",
+                                    " "
+                            );
+
+
+                    novoTitulo =
+                            novoTitulo.replaceAll(
+                                    "\\s+",
+                                    " "
+                            );
+
+
+                    /*
+                     * Limita o tamanho do título.
+                     */
+
+                    if (novoTitulo.length() > 40) {
+
+                        novoTitulo =
+                                novoTitulo.substring(
+                                        0,
+                                        40
+                                ).trim();
+                    }
+
+
+                    /*
+                     * Salva o título.
+                     */
+
+                    conversa.titulo =
+                            novoTitulo;
+
+
+                    /*
+                     * Marca que o usuário
+                     * editou manualmente.
+                     *
+                     * Assim o título não será
+                     * sobrescrito pela primeira
+                     * pergunta.
+                     */
+
+                    conversa.tituloEditado =
+                            true;
+
+
+                    /*
+                     * Se for a conversa atual,
+                     * atualiza o título no topo.
+                     */
+
+                    if (conversa ==
+                            conversaAtual) {
+
+                        if (chatTitle != null) {
+
+                            chatTitle.setText(
+                                    novoTitulo
+                            );
+                        }
+                    }
+
+
+                    /*
+                     * Atualiza a barra lateral.
+                     */
+
+                    atualizarHistorico();
+
+
+                    System.out.println(
+                            "Título alterado para: " +
+                                    novoTitulo
+                    );
+                }
+        );
+    }
+
+
+    /* ========================================= */
     /* ABRIR CONVERSA */
     /* ========================================= */
 
@@ -1086,7 +1331,8 @@ public class ChatController {
             Conversa conversa
     ) {
 
-        if (conversa == conversaAtual) {
+        if (conversa ==
+                conversaAtual) {
 
             return;
         }
@@ -1120,7 +1366,7 @@ public class ChatController {
 
 
         /*
-         * Atualiza título.
+         * Atualiza título do topo.
          */
 
         if (chatTitle != null) {
@@ -1135,8 +1381,10 @@ public class ChatController {
          * Reconstrói todas as mensagens.
          */
 
-        for (Mensagem mensagem :
-                conversa.mensagens) {
+        for (
+                Mensagem mensagem :
+                conversa.mensagens
+        ) {
 
             if (mensagem.usuario) {
 
@@ -1168,7 +1416,9 @@ public class ChatController {
         ) {
 
             Mensagem mensagem =
-                    conversa.mensagens.get(i);
+                    conversa.mensagens.get(
+                            i
+                    );
 
 
             if (mensagem.usuario) {
@@ -1200,7 +1450,9 @@ public class ChatController {
 
         Platform.runLater(
                 () ->
-                        scrollPane.setVvalue(1.0)
+                        scrollPane.setVvalue(
+                                1.0
+                        )
         );
     }
 
@@ -1227,7 +1479,8 @@ public class ChatController {
          * cria uma nova.
          */
 
-        if (conversa == conversaAtual) {
+        if (conversa ==
+                conversaAtual) {
 
             conversaAtual =
                     new Conversa();
@@ -1451,7 +1704,9 @@ public class ChatController {
                             });
 
 
-                    thread.setDaemon(true);
+                    thread.setDaemon(
+                            true
+                    );
 
 
                     thread.start();
@@ -1624,8 +1879,7 @@ public class ChatController {
     private void novaConversa() {
 
         /*
-         * A conversa atual continua salva
-         * na lista enquanto o programa estiver aberto.
+         * A conversa atual continua no histórico.
          */
 
         conversaAtual =
@@ -1693,7 +1947,7 @@ public class ChatController {
     private void limparConversa() {
 
         /*
-         * Limpa as mensagens da conversa atual.
+         * Limpa as mensagens.
          */
 
         conversaAtual.mensagens.clear();
@@ -1705,6 +1959,10 @@ public class ChatController {
 
         conversaAtual.titulo =
                 "Conversa atual";
+
+
+        conversaAtual.tituloEditado =
+                false;
 
 
         tituloGerado = false;
@@ -1735,7 +1993,7 @@ public class ChatController {
 
         /*
          * Se a conversa estava no histórico,
-         * remove ela de lá porque agora está vazia.
+         * remove ela porque ficou vazia.
          */
 
         conversas.remove(
@@ -1834,6 +2092,15 @@ public class ChatController {
 
         private String titulo =
                 "Conversa atual";
+
+
+        /*
+         * Indica se o usuário alterou
+         * manualmente o título.
+         */
+
+        private boolean tituloEditado =
+                false;
 
 
         private final List<Mensagem> mensagens =
