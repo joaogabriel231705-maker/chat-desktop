@@ -14,6 +14,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatController {
 
@@ -23,6 +25,9 @@ public class ChatController {
 
     @FXML
     private VBox mensagensContainer;
+
+    @FXML
+    private VBox historicoContainer;
 
     @FXML
     private TextField mensagemField;
@@ -35,9 +40,6 @@ public class ChatController {
 
     @FXML
     private Button temaButton;
-
-    @FXML
-    private Button conversaAtualButton;
 
     @FXML
     private Label chatTitle;
@@ -72,12 +74,32 @@ public class ChatController {
 
 
     /* ========================================= */
+    /* HISTÓRICO */
+    /* ========================================= */
+
+    private final List<Conversa> conversas =
+            new ArrayList<>();
+
+
+    /* ========================================= */
+    /* CONVERSA ATUAL */
+    /* ========================================= */
+
+    private Conversa conversaAtual;
+
+
+    /* ========================================= */
     /* CONSTRUTOR */
     /* ========================================= */
 
     public ChatController() {
 
         ragService = new RagService();
+
+        /*
+         * Cria a primeira conversa.
+         */
+        conversaAtual = new Conversa();
     }
 
 
@@ -100,6 +122,18 @@ public class ChatController {
 
 
         carregarTemaEscuro();
+
+
+        /*
+         * Mostra a tela inicial.
+         */
+        mostrarMensagemInicial();
+
+
+        /*
+         * O histórico começa vazio.
+         */
+        atualizarHistorico();
     }
 
 
@@ -109,41 +143,55 @@ public class ChatController {
 
     private void carregarTemaEscuro() {
 
-        Scene scene =
-                mensagensContainer.getScene();
+        /*
+         * Durante o initialize(), o Scene pode
+         * ainda não estar disponível.
+         */
+
+        Platform.runLater(() -> {
+
+            Scene scene =
+                    mensagensContainer.getScene();
 
 
-        if (scene == null) {
+            if (scene == null) {
 
-            return;
-        }
+                return;
+            }
 
 
-        URL darkUrl =
-                getClass().getResource(
-                        "/com/example/chatdesktop/css/style.css"
+            URL darkUrl =
+                    getClass().getResource(
+                            "/com/example/chatdesktop/css/style.css"
+                    );
+
+
+            if (darkUrl == null) {
+
+                System.out.println(
+                        "ERRO: style.css não encontrado!"
                 );
 
+                return;
+            }
 
-        if (darkUrl == null) {
 
-            System.out.println(
-                    "ERRO: style.css não encontrado!"
+            scene.getStylesheets().clear();
+
+
+            scene.getStylesheets().add(
+                    darkUrl.toExternalForm()
             );
 
-            return;
-        }
+
+            temaClaro = false;
 
 
-        scene.getStylesheets().clear();
+            if (temaButton != null) {
 
-
-        scene.getStylesheets().add(
-                darkUrl.toExternalForm()
-        );
-
-
-        temaClaro = false;
+                temaButton.setText("☀");
+            }
+        });
     }
 
 
@@ -211,9 +259,9 @@ public class ChatController {
         scene.getStylesheets().clear();
 
 
-        /* ------------------------------------- */
+        /* ===================================== */
         /* TEMA CLARO */
-        /* ------------------------------------- */
+        /* ===================================== */
 
         if (!temaClaro) {
 
@@ -234,9 +282,9 @@ public class ChatController {
         }
 
 
-        /* ------------------------------------- */
+        /* ===================================== */
         /* TEMA ESCURO */
-        /* ------------------------------------- */
+        /* ===================================== */
 
         else {
 
@@ -276,26 +324,59 @@ public class ChatController {
         }
 
 
-        mensagem = mensagem.trim();
+        mensagem =
+                mensagem.trim();
 
 
         /* ===================================== */
         /* SALVA A ÚLTIMA PERGUNTA */
         /* ===================================== */
 
-        ultimaPergunta = mensagem;
+        ultimaPergunta =
+                mensagem;
 
 
         /* ===================================== */
-        /* PRIMEIRA MENSAGEM */
+        /* PRIMEIRA MENSAGEM DA CONVERSA */
         /* ===================================== */
 
         if (!tituloGerado) {
 
-            gerarTituloConversa(mensagem);
+            gerarTituloConversa(
+                    mensagem
+            );
+
 
             tituloGerado = true;
+
+
+            /*
+             * Adiciona a conversa ao histórico.
+             */
+
+            if (!conversas.contains(conversaAtual)) {
+
+                conversas.add(
+                        0,
+                        conversaAtual
+                );
+            }
+
+
+            atualizarHistorico();
         }
+
+
+        /* ===================================== */
+        /* SALVA MENSAGEM DO USUÁRIO */
+        /* ===================================== */
+
+        conversaAtual.mensagens.add(
+                new Mensagem(
+                        true,
+                        mensagem
+                )
+        );
 
 
         /* ===================================== */
@@ -348,6 +429,18 @@ public class ChatController {
                             removerDigitando();
 
 
+                            /*
+                             * Salva a resposta da IA.
+                             */
+
+                            conversaAtual.mensagens.add(
+                                    new Mensagem(
+                                            false,
+                                            resposta
+                                    )
+                            );
+
+
                             adicionarMensagemIA(
                                     resposta
                             );
@@ -359,6 +452,9 @@ public class ChatController {
 
 
                             mensagemField.requestFocus();
+
+
+                            atualizarHistorico();
                         });
 
 
@@ -506,6 +602,18 @@ public class ChatController {
                             removerDigitando();
 
 
+                            /*
+                             * Salva o erro como resposta da IA.
+                             */
+
+                            conversaAtual.mensagens.add(
+                                    new Mensagem(
+                                            false,
+                                            erroFinal
+                                    )
+                            );
+
+
                             adicionarMensagemIA(
                                     erroFinal
                             );
@@ -517,6 +625,9 @@ public class ChatController {
 
 
                             mensagemField.requestFocus();
+
+
+                            atualizarHistorico();
                         });
                     }
 
@@ -544,11 +655,36 @@ public class ChatController {
 
 
         /*
-         * Remove a última resposta da IA
-         * antes de gerar uma nova.
+         * Remove a última resposta visual.
          */
 
         removerUltimaMensagemIA();
+
+
+        /*
+         * Remove a última resposta salva
+         * no histórico.
+         */
+
+        if (!conversaAtual.mensagens.isEmpty()) {
+
+            int ultimoIndice =
+                    conversaAtual.mensagens.size() - 1;
+
+
+            Mensagem ultimaMensagem =
+                    conversaAtual.mensagens.get(
+                            ultimoIndice
+                    );
+
+
+            if (!ultimaMensagem.usuario) {
+
+                conversaAtual.mensagens.remove(
+                        ultimoIndice
+                );
+            }
+        }
 
 
         enviarButton.setDisable(true);
@@ -577,6 +713,18 @@ public class ChatController {
                             removerDigitando();
 
 
+                            /*
+                             * Salva a nova resposta.
+                             */
+
+                            conversaAtual.mensagens.add(
+                                    new Mensagem(
+                                            false,
+                                            novaResposta
+                                    )
+                            );
+
+
                             adicionarMensagemIA(
                                     novaResposta
                             );
@@ -588,6 +736,9 @@ public class ChatController {
 
 
                             mensagemField.requestFocus();
+
+
+                            atualizarHistorico();
                         });
 
 
@@ -598,9 +749,21 @@ public class ChatController {
                             removerDigitando();
 
 
-                            adicionarMensagemIA(
+                            String erro =
                                     "❌ Não foi possível regenerar a resposta.\n\n" +
-                                            "Tente novamente."
+                                            "Tente novamente.";
+
+
+                            conversaAtual.mensagens.add(
+                                    new Mensagem(
+                                            false,
+                                            erro
+                                    )
+                            );
+
+
+                            adicionarMensagemIA(
+                                    erro
                             );
 
 
@@ -630,13 +793,20 @@ public class ChatController {
     private void removerUltimaMensagemIA() {
 
         for (
-                int i = mensagensContainer.getChildren().size() - 1;
+                int i =
+                mensagensContainer
+                        .getChildren()
+                        .size() - 1;
+
                 i >= 0;
+
                 i--
         ) {
 
             javafx.scene.Node node =
-                    mensagensContainer.getChildren().get(i);
+                    mensagensContainer
+                            .getChildren()
+                            .get(i);
 
 
             if (
@@ -652,11 +822,14 @@ public class ChatController {
 
                 if (
                         !linha.getChildren().isEmpty() &&
-                                linha.getChildren().get(0) instanceof VBox
+                                linha.getChildren().get(0)
+                                        instanceof VBox
                 ) {
 
                     VBox caixa =
-                            (VBox) linha.getChildren().get(0);
+                            (VBox) linha
+                                    .getChildren()
+                                    .get(0);
 
 
                     if (
@@ -685,12 +858,6 @@ public class ChatController {
     private void gerarTituloConversa(
             String mensagem
     ) {
-
-        if (conversaAtualButton == null) {
-
-            return;
-        }
-
 
         String titulo =
                 mensagem.trim();
@@ -730,14 +897,381 @@ public class ChatController {
         }
 
 
-        conversaAtualButton.setText(
-                "💬  " + titulo
-        );
+        conversaAtual.titulo =
+                titulo;
+
+
+        if (chatTitle != null) {
+
+            chatTitle.setText(
+                    titulo
+            );
+        }
 
 
         System.out.println(
                 "Título da conversa: " +
                         titulo
+        );
+    }
+
+
+    /* ========================================= */
+    /* ATUALIZAR HISTÓRICO LATERAL */
+    /* ========================================= */
+
+    private void atualizarHistorico() {
+
+        if (historicoContainer == null) {
+
+            return;
+        }
+
+
+        historicoContainer
+                .getChildren()
+                .clear();
+
+
+        /*
+         * Mostra as conversas da mais recente
+         * para a mais antiga.
+         */
+
+        for (Conversa conversa : conversas) {
+
+            /* ================================= */
+            /* LINHA */
+            /* ================================= */
+
+            HBox linha =
+                    new HBox();
+
+
+            linha.setSpacing(4);
+
+
+            linha.setAlignment(
+                    Pos.CENTER_LEFT
+            );
+
+
+            linha.setMaxWidth(
+                    Double.MAX_VALUE
+            );
+
+
+            linha.getStyleClass().add(
+                    "history-item"
+            );
+
+
+            /* ================================= */
+            /* BOTÃO DA CONVERSA */
+            /* ================================= */
+
+            Button botaoConversa =
+                    new Button();
+
+
+            botaoConversa.setText(
+                    "💬  " + conversa.titulo
+            );
+
+
+            botaoConversa.setMaxWidth(
+                    Double.MAX_VALUE
+            );
+
+
+            botaoConversa.setMnemonicParsing(
+                    false
+            );
+
+
+            botaoConversa.getStyleClass().add(
+                    "conversation-button"
+            );
+
+
+            /*
+             * Faz o botão ocupar o espaço.
+             */
+
+            HBox.setHgrow(
+                    botaoConversa,
+                    javafx.scene.layout.Priority.ALWAYS
+            );
+
+
+            /*
+             * Abre a conversa ao clicar.
+             */
+
+            botaoConversa.setOnAction(
+                    event ->
+                            abrirConversa(
+                                    conversa
+                            )
+            );
+
+
+            /* ================================= */
+            /* BOTÃO EXCLUIR */
+            /* ================================= */
+
+            Button removerButton =
+                    new Button(
+                            "🗑"
+                    );
+
+
+            removerButton.setMnemonicParsing(
+                    false
+            );
+
+
+            removerButton.setTooltip(
+                    new Tooltip(
+                            "Remover conversa"
+                    )
+            );
+
+
+            removerButton.getStyleClass().add(
+                    "delete-conversation-button"
+            );
+
+
+            /*
+             * Remove somente aquela conversa.
+             */
+
+            removerButton.setOnAction(
+                    event ->
+                            removerConversa(
+                                    conversa
+                            )
+            );
+
+
+            /* ================================= */
+            /* ADICIONA OS BOTÕES */
+            /* ================================= */
+
+            linha.getChildren().addAll(
+                    botaoConversa,
+                    removerButton
+            );
+
+
+            /* ================================= */
+            /* ADICIONA NO HISTÓRICO */
+            /* ================================= */
+
+            historicoContainer
+                    .getChildren()
+                    .add(
+                            linha
+                    );
+        }
+    }
+
+
+    /* ========================================= */
+    /* ABRIR CONVERSA */
+    /* ========================================= */
+
+    private void abrirConversa(
+            Conversa conversa
+    ) {
+
+        if (conversa == conversaAtual) {
+
+            return;
+        }
+
+
+        /*
+         * Troca a conversa atual.
+         */
+
+        conversaAtual =
+                conversa;
+
+
+        /*
+         * Atualiza informações de controle.
+         */
+
+        tituloGerado = true;
+
+
+        ultimaPergunta = null;
+
+
+        /*
+         * Limpa a tela.
+         */
+
+        mensagensContainer
+                .getChildren()
+                .clear();
+
+
+        /*
+         * Atualiza título.
+         */
+
+        if (chatTitle != null) {
+
+            chatTitle.setText(
+                    conversa.titulo
+            );
+        }
+
+
+        /*
+         * Reconstrói todas as mensagens.
+         */
+
+        for (Mensagem mensagem :
+                conversa.mensagens) {
+
+            if (mensagem.usuario) {
+
+                adicionarMensagemUsuario(
+                        mensagem.texto
+                );
+
+            } else {
+
+                adicionarMensagemIA(
+                        mensagem.texto
+                );
+            }
+        }
+
+
+        /*
+         * Descobre a última pergunta
+         * feita pelo usuário.
+         */
+
+        for (
+                int i =
+                conversa.mensagens.size() - 1;
+
+                i >= 0;
+
+                i--
+        ) {
+
+            Mensagem mensagem =
+                    conversa.mensagens.get(i);
+
+
+            if (mensagem.usuario) {
+
+                ultimaPergunta =
+                        mensagem.texto;
+
+                break;
+            }
+        }
+
+
+        /*
+         * Atualiza histórico.
+         */
+
+        atualizarHistorico();
+
+
+        mensagemField.clear();
+
+
+        mensagemField.requestFocus();
+
+
+        /*
+         * Vai para o final da conversa.
+         */
+
+        Platform.runLater(
+                () ->
+                        scrollPane.setVvalue(1.0)
+        );
+    }
+
+
+    /* ========================================= */
+    /* REMOVER CONVERSA */
+    /* ========================================= */
+
+    private void removerConversa(
+            Conversa conversa
+    ) {
+
+        /*
+         * Remove da lista.
+         */
+
+        conversas.remove(
+                conversa
+        );
+
+
+        /*
+         * Se era a conversa aberta,
+         * cria uma nova.
+         */
+
+        if (conversa == conversaAtual) {
+
+            conversaAtual =
+                    new Conversa();
+
+
+            tituloGerado = false;
+
+
+            ultimaPergunta = null;
+
+
+            mensagensContainer
+                    .getChildren()
+                    .clear();
+
+
+            if (chatTitle != null) {
+
+                chatTitle.setText(
+                        "Nexa AI"
+                );
+            }
+
+
+            mostrarMensagemInicial();
+
+
+            mensagemField.clear();
+
+
+            mensagemField.requestFocus();
+        }
+
+
+        /*
+         * Atualiza a barra lateral.
+         */
+
+        atualizarHistorico();
+
+
+        System.out.println(
+                "Conversa removida: " +
+                        conversa.titulo
         );
     }
 
@@ -760,7 +1294,9 @@ public class ChatController {
 
 
         Label nome =
-                new Label("Você");
+                new Label(
+                        "Você"
+                );
 
 
         nome.getStyleClass().add(
@@ -769,10 +1305,14 @@ public class ChatController {
 
 
         Label texto =
-                new Label(mensagem);
+                new Label(
+                        mensagem
+                );
 
 
-        texto.setWrapText(true);
+        texto.setWrapText(
+                true
+        );
 
 
         texto.getStyleClass().add(
@@ -802,9 +1342,11 @@ public class ChatController {
         );
 
 
-        mensagensContainer.getChildren().add(
-                linha
-        );
+        mensagensContainer
+                .getChildren()
+                .add(
+                        linha
+                );
     }
 
 
@@ -820,7 +1362,9 @@ public class ChatController {
                 new VBox();
 
 
-        mensagemBox.setSpacing(10);
+        mensagemBox.setSpacing(
+                10
+        );
 
 
         mensagemBox.getStyleClass().add(
@@ -840,10 +1384,14 @@ public class ChatController {
 
 
         Label texto =
-                new Label(resposta);
+                new Label(
+                        resposta
+                );
 
 
-        texto.setWrapText(true);
+        texto.setWrapText(
+                true
+        );
 
 
         texto.getStyleClass().add(
@@ -927,7 +1475,8 @@ public class ChatController {
 
 
         regenerarButton.setOnAction(
-                event -> regenerarResposta()
+                event ->
+                        regenerarResposta()
         );
 
 
@@ -971,9 +1520,11 @@ public class ChatController {
         );
 
 
-        mensagensContainer.getChildren().add(
-                linha
-        );
+        mensagensContainer
+                .getChildren()
+                .add(
+                        linha
+                );
     }
 
 
@@ -1040,9 +1591,11 @@ public class ChatController {
         );
 
 
-        mensagensContainer.getChildren().add(
-                digitando
-        );
+        mensagensContainer
+                .getChildren()
+                .add(
+                        digitando
+                );
     }
 
 
@@ -1070,9 +1623,13 @@ public class ChatController {
     @FXML
     private void novaConversa() {
 
-        mensagensContainer
-                .getChildren()
-                .clear();
+        /*
+         * A conversa atual continua salva
+         * na lista enquanto o programa estiver aberto.
+         */
+
+        conversaAtual =
+                new Conversa();
 
 
         tituloGerado = false;
@@ -1080,6 +1637,19 @@ public class ChatController {
 
         ultimaPergunta = null;
 
+
+        /*
+         * Limpa a área de mensagens.
+         */
+
+        mensagensContainer
+                .getChildren()
+                .clear();
+
+
+        /*
+         * Volta o título.
+         */
 
         if (chatTitle != null) {
 
@@ -1089,40 +1659,67 @@ public class ChatController {
         }
 
 
-        if (conversaAtualButton != null) {
-
-            conversaAtualButton.setText(
-                    "💬  Conversa atual"
-            );
-        }
-
+        /*
+         * Mostra mensagem inicial.
+         */
 
         mostrarMensagemInicial();
+
+
+        /*
+         * Atualiza o histórico.
+         */
+
+        atualizarHistorico();
 
 
         mensagemField.clear();
 
 
         mensagemField.requestFocus();
+
+
+        System.out.println(
+                "Nova conversa criada."
+        );
     }
 
 
     /* ========================================= */
-    /* LIMPAR CONVERSA */
+    /* LIMPAR CONVERSA ATUAL */
     /* ========================================= */
 
     @FXML
     private void limparConversa() {
 
-        mensagensContainer
-                .getChildren()
-                .clear();
+        /*
+         * Limpa as mensagens da conversa atual.
+         */
+
+        conversaAtual.mensagens.clear();
+
+
+        /*
+         * Reseta o título.
+         */
+
+        conversaAtual.titulo =
+                "Conversa atual";
 
 
         tituloGerado = false;
 
 
         ultimaPergunta = null;
+
+
+        /*
+         * Limpa a tela.
+         */
+
+        mensagensContainer
+                .getChildren()
+                .clear();
 
 
         if (chatTitle != null) {
@@ -1133,15 +1730,26 @@ public class ChatController {
         }
 
 
-        if (conversaAtualButton != null) {
-
-            conversaAtualButton.setText(
-                    "💬  Conversa atual"
-            );
-        }
-
-
         mostrarMensagemInicial();
+
+
+        /*
+         * Se a conversa estava no histórico,
+         * remove ela de lá porque agora está vazia.
+         */
+
+        conversas.remove(
+                conversaAtual
+        );
+
+
+        mensagemField.clear();
+
+
+        mensagemField.requestFocus();
+
+
+        atualizarHistorico();
     }
 
 
@@ -1171,7 +1779,9 @@ public class ChatController {
 
 
         Label icone =
-                new Label("✦");
+                new Label(
+                        "✦"
+                );
 
 
         icone.getStyleClass().add(
@@ -1213,5 +1823,45 @@ public class ChatController {
                 .add(
                         inicio
                 );
+    }
+
+
+    /* ========================================= */
+    /* CLASSE CONVERSA */
+    /* ========================================= */
+
+    private static class Conversa {
+
+        private String titulo =
+                "Conversa atual";
+
+
+        private final List<Mensagem> mensagens =
+                new ArrayList<>();
+    }
+
+
+    /* ========================================= */
+    /* CLASSE MENSAGEM */
+    /* ========================================= */
+
+    private static class Mensagem {
+
+        private final boolean usuario;
+
+        private final String texto;
+
+
+        private Mensagem(
+                boolean usuario,
+                String texto
+        ) {
+
+            this.usuario =
+                    usuario;
+
+            this.texto =
+                    texto;
+        }
     }
 }

@@ -530,3 +530,82 @@
  -fx-text-fill: #ffffff;
  -fx-background-color: #252a34;
 }
+/* ========================================= */
+/* HISTÓRICO LATERAL */
+/* ========================================= */
+
+.history-scroll {
+ -fx-background-color: transparent;
+ -fx-background-insets: 0;
+ -fx-border-color: transparent;
+}
+
+.history-scroll > .viewport {
+ -fx-background-color: transparent;
+}
+
+.history-scroll .content {
+ -fx-background-color: transparent;
+}
+
+.history-container {
+ -fx-background-color: transparent;
+}
+/* ========================================= */
+/* ITEM DO HISTÓRICO */
+/* ========================================= */
+
+.history-item {
+ -fx-background-color: transparent;
+ -fx-padding: 0;
+}
+
+
+/* ========================================= */
+/* BOTÃO DE EXCLUIR CONVERSA */
+/* ========================================= */
+
+.delete-conversation-button {
+ -fx-background-color: transparent;
+ -fx-text-fill: #8b9bb0;
+ -fx-font-size: 13px;
+ -fx-background-radius: 8;
+ -fx-border-color: transparent;
+ -fx-padding: 8px 7px;
+ -fx-cursor: hand;
+}
+
+
+/* ========================================= */
+/* HOVER DO BOTÃO EXCLUIR */
+/* ========================================= */
+
+.delete-conversation-button:hover {
+ -fx-background-color: #3a1f27;
+ -fx-text-fill: #ff6b6b;
+}
+
+
+/* ========================================= */
+/* CONVERSA DO HISTÓRICO */
+/* ========================================= */
+
+.conversation-button {
+ -fx-background-color: #142b45;
+ -fx-text-fill: #ffffff;
+ -fx-font-size: 13px;
+ -fx-alignment: CENTER_LEFT;
+ -fx-background-radius: 8;
+ -fx-border-color: transparent;
+ -fx-padding: 10px;
+ -fx-cursor: hand;
+}
+
+
+/* ========================================= */
+/* HOVER DA CONVERSA */
+/* ========================================= */
+
+.conversation-button:hover {
+ -fx-background-color: #1d3b5d;
+}
