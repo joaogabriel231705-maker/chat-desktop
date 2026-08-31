@@ -488,10 +488,6 @@ public class ChatController {
 
                         switch (erro) {
 
-                            /* ============================== */
-                            /* SEM INTERNET */
-                            /* ============================== */
-
                             case "SEM_INTERNET":
 
                                 mensagemErro =
@@ -500,10 +496,6 @@ public class ChatController {
 
                                 break;
 
-
-                            /* ============================== */
-                            /* CHAVE INVÁLIDA */
-                            /* ============================== */
 
                             case "CHAVE_INVALIDA":
 
@@ -514,10 +506,6 @@ public class ChatController {
                                 break;
 
 
-                            /* ============================== */
-                            /* SEM PERMISSÃO */
-                            /* ============================== */
-
                             case "SEM_PERMISSAO":
 
                                 mensagemErro =
@@ -526,10 +514,6 @@ public class ChatController {
 
                                 break;
 
-
-                            /* ============================== */
-                            /* LIMITE DA API */
-                            /* ============================== */
 
                             case "LIMITE_API":
 
@@ -540,10 +524,6 @@ public class ChatController {
                                 break;
 
 
-                            /* ============================== */
-                            /* TIMEOUT */
-                            /* ============================== */
-
                             case "TIMEOUT":
 
                                 mensagemErro =
@@ -552,10 +532,6 @@ public class ChatController {
 
                                 break;
 
-
-                            /* ============================== */
-                            /* SERVIDOR */
-                            /* ============================== */
 
                             case "SERVIDOR":
 
@@ -566,10 +542,6 @@ public class ChatController {
                                 break;
 
 
-                            /* ============================== */
-                            /* COMUNICAÇÃO */
-                            /* ============================== */
-
                             case "COMUNICACAO":
 
                                 mensagemErro =
@@ -579,10 +551,6 @@ public class ChatController {
                                 break;
 
 
-                            /* ============================== */
-                            /* RESPOSTA INVÁLIDA */
-                            /* ============================== */
-
                             case "RESPOSTA_INVALIDA":
 
                                 mensagemErro =
@@ -591,10 +559,6 @@ public class ChatController {
 
                                 break;
 
-
-                            /* ============================== */
-                            /* ERRO DESCONHECIDO */
-                            /* ============================== */
 
                             default:
 
@@ -614,10 +578,6 @@ public class ChatController {
 
                             removerDigitando();
 
-
-                            /*
-                             * Salva o erro como resposta da IA.
-                             */
 
                             conversaAtual.mensagens.add(
                                     new Mensagem(
@@ -667,17 +627,8 @@ public class ChatController {
         }
 
 
-        /*
-         * Remove a última resposta visual.
-         */
-
         removerUltimaMensagemIA();
 
-
-        /*
-         * Remove a última resposta salva
-         * no histórico.
-         */
 
         if (!conversaAtual.mensagens.isEmpty()) {
 
@@ -725,10 +676,6 @@ public class ChatController {
 
                             removerDigitando();
 
-
-                            /*
-                             * Salva a nova resposta.
-                             */
 
                             conversaAtual.mensagens.add(
                                     new Mensagem(
@@ -1018,20 +965,11 @@ public class ChatController {
             );
 
 
-            /*
-             * Faz o botão ocupar todo o espaço
-             * disponível.
-             */
-
             HBox.setHgrow(
                     botaoConversa,
                     javafx.scene.layout.Priority.ALWAYS
             );
 
-
-            /*
-             * Abre a conversa.
-             */
 
             botaoConversa.setOnAction(
                     event ->
@@ -1143,10 +1081,6 @@ public class ChatController {
             Conversa conversa
     ) {
 
-        /*
-         * Cria uma caixa de diálogo.
-         */
-
         TextInputDialog dialog =
                 new TextInputDialog(
                         conversa.titulo
@@ -1168,26 +1102,12 @@ public class ChatController {
         );
 
 
-        /*
-         * Pega o campo de texto da janela.
-         */
-
         TextField campo =
                 dialog.getEditor();
 
 
-        /*
-         * Seleciona o título atual
-         * para facilitar a substituição.
-         */
-
         campo.selectAll();
 
-
-        /*
-         * Mostra a janela e espera
-         * o usuário decidir.
-         */
 
         dialog.showAndWait().ifPresent(
                 novoTitulo -> {
@@ -1195,10 +1115,6 @@ public class ChatController {
                     novoTitulo =
                             novoTitulo.trim();
 
-
-                    /*
-                     * Não permite título vazio.
-                     */
 
                     if (novoTitulo.isBlank()) {
 
@@ -1230,10 +1146,6 @@ public class ChatController {
                     }
 
 
-                    /*
-                     * Limpa quebras de linha.
-                     */
-
                     novoTitulo =
                             novoTitulo.replace(
                                     "\n",
@@ -1255,10 +1167,6 @@ public class ChatController {
                             );
 
 
-                    /*
-                     * Limita o tamanho do título.
-                     */
-
                     if (novoTitulo.length() > 40) {
 
                         novoTitulo =
@@ -1269,31 +1177,13 @@ public class ChatController {
                     }
 
 
-                    /*
-                     * Salva o título.
-                     */
-
                     conversa.titulo =
                             novoTitulo;
 
 
-                    /*
-                     * Marca que o usuário
-                     * editou manualmente.
-                     *
-                     * Assim o título não será
-                     * sobrescrito pela primeira
-                     * pergunta.
-                     */
-
                     conversa.tituloEditado =
                             true;
 
-
-                    /*
-                     * Se for a conversa atual,
-                     * atualiza o título no topo.
-                     */
 
                     if (conversa ==
                             conversaAtual) {
@@ -1306,10 +1196,6 @@ public class ChatController {
                         }
                     }
 
-
-                    /*
-                     * Atualiza a barra lateral.
-                     */
 
                     atualizarHistorico();
 
@@ -1338,17 +1224,9 @@ public class ChatController {
         }
 
 
-        /*
-         * Troca a conversa atual.
-         */
-
         conversaAtual =
                 conversa;
 
-
-        /*
-         * Atualiza informações de controle.
-         */
 
         tituloGerado = true;
 
@@ -1356,18 +1234,10 @@ public class ChatController {
         ultimaPergunta = null;
 
 
-        /*
-         * Limpa a tela.
-         */
-
         mensagensContainer
                 .getChildren()
                 .clear();
 
-
-        /*
-         * Atualiza título do topo.
-         */
 
         if (chatTitle != null) {
 
@@ -1376,10 +1246,6 @@ public class ChatController {
             );
         }
 
-
-        /*
-         * Reconstrói todas as mensagens.
-         */
 
         for (
                 Mensagem mensagem :
@@ -1400,11 +1266,6 @@ public class ChatController {
             }
         }
 
-
-        /*
-         * Descobre a última pergunta
-         * feita pelo usuário.
-         */
 
         for (
                 int i =
@@ -1431,10 +1292,6 @@ public class ChatController {
         }
 
 
-        /*
-         * Atualiza histórico.
-         */
-
         atualizarHistorico();
 
 
@@ -1443,10 +1300,6 @@ public class ChatController {
 
         mensagemField.requestFocus();
 
-
-        /*
-         * Vai para o final da conversa.
-         */
 
         Platform.runLater(
                 () ->
@@ -1458,7 +1311,7 @@ public class ChatController {
 
 
     /* ========================================= */
-    /* REMOVER CONVERSA */
+    /* REMOVER CONVERSA COM CONFIRMAÇÃO */
     /* ========================================= */
 
     private void removerConversa(
@@ -1466,65 +1319,147 @@ public class ChatController {
     ) {
 
         /*
-         * Remove da lista.
+         * =====================================
+         * CRIA A JANELA DE CONFIRMAÇÃO
+         * =====================================
          */
 
-        conversas.remove(
-                conversa
+        Alert confirmacao =
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
+
+
+        confirmacao.setTitle(
+                "Excluir conversa"
+        );
+
+
+        confirmacao.setHeaderText(
+                "Excluir esta conversa?"
+        );
+
+
+        confirmacao.setContentText(
+                "A conversa \"" +
+                        conversa.titulo +
+                        "\" será removida do histórico."
         );
 
 
         /*
-         * Se era a conversa aberta,
-         * cria uma nova.
+         * =====================================
+         * CRIA OS BOTÕES
+         * =====================================
          */
 
-        if (conversa ==
-                conversaAtual) {
-
-            conversaAtual =
-                    new Conversa();
-
-
-            tituloGerado = false;
-
-
-            ultimaPergunta = null;
-
-
-            mensagensContainer
-                    .getChildren()
-                    .clear();
-
-
-            if (chatTitle != null) {
-
-                chatTitle.setText(
-                        "Nexa AI"
+        ButtonType excluirButton =
+                new ButtonType(
+                        "Excluir"
                 );
-            }
 
 
-            mostrarMensagemInicial();
+        ButtonType cancelarButton =
+                new ButtonType(
+                        "Cancelar",
+                        ButtonBar.ButtonData.CANCEL_CLOSE
+                );
 
 
-            mensagemField.clear();
-
-
-            mensagemField.requestFocus();
-        }
+        confirmacao.getButtonTypes().setAll(
+                excluirButton,
+                cancelarButton
+        );
 
 
         /*
-         * Atualiza a barra lateral.
+         * =====================================
+         * ESPERA A ESCOLHA DO USUÁRIO
+         * =====================================
          */
 
-        atualizarHistorico();
+        confirmacao.showAndWait().ifPresent(
+                resposta -> {
+
+                    /*
+                     * Se clicou em cancelar,
+                     * simplesmente não faz nada.
+                     */
+
+                    if (resposta !=
+                            excluirButton) {
+
+                        return;
+                    }
 
 
-        System.out.println(
-                "Conversa removida: " +
-                        conversa.titulo
+                    /*
+                     * =================================
+                     * REMOVE A CONVERSA
+                     * =================================
+                     */
+
+                    conversas.remove(
+                            conversa
+                    );
+
+
+                    /*
+                     * =================================
+                     * SE ERA A CONVERSA ABERTA
+                     * =================================
+                     */
+
+                    if (conversa ==
+                            conversaAtual) {
+
+                        conversaAtual =
+                                new Conversa();
+
+
+                        tituloGerado = false;
+
+
+                        ultimaPergunta = null;
+
+
+                        mensagensContainer
+                                .getChildren()
+                                .clear();
+
+
+                        if (chatTitle != null) {
+
+                            chatTitle.setText(
+                                    "Nexa AI"
+                            );
+                        }
+
+
+                        mostrarMensagemInicial();
+
+
+                        mensagemField.clear();
+
+
+                        mensagemField.requestFocus();
+                    }
+
+
+                    /*
+                     * =================================
+                     * ATUALIZA O HISTÓRICO
+                     * =================================
+                     */
+
+                    atualizarHistorico();
+
+
+                    System.out.println(
+                            "Conversa removida: " +
+                                    conversa.titulo
+                    );
+                }
         );
     }
 
