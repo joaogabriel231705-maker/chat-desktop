@@ -1,6 +1,11 @@
 package com.example.chatdesktop.Controller;
 
 import com.example.chatdesktop.config.PreferenciasConfig;
+import com.example.chatdesktop.dao.ConversaDAO;
+import com.example.chatdesktop.dao.Database;
+import com.example.chatdesktop.dao.MensagemDAO;
+import com.example.chatdesktop.model.Conversa;
+import com.example.chatdesktop.model.mensagem;
 import com.example.chatdesktop.service.RagService;
 
 import javafx.application.Platform;
@@ -53,6 +58,17 @@ public class ChatController {
 
 
     /* ========================================= */
+    /* SQLITE */
+    /* ========================================= */
+
+    private final ConversaDAO conversaDAO =
+            new ConversaDAO();
+
+    private final MensagemDAO mensagemDAO =
+            new MensagemDAO();
+
+
+    /* ========================================= */
     /* CONTROLE DOS TEMAS */
     /* ========================================= */
 
@@ -96,6 +112,13 @@ public class ChatController {
 
         ragService = new RagService();
 
+        /*
+         * Cria o banco e as tabelas,
+         * caso ainda não existam.
+         */
+
+        Database.criarTabelas();
+
         conversaAtual = new Conversa();
     }
 
@@ -119,7 +142,7 @@ public class ChatController {
 
 
         /*
-         * Carrega o tema salvo no computador.
+         * Carrega o tema salvo.
          */
 
         carregarTemaSalvo();
@@ -133,10 +156,53 @@ public class ChatController {
 
 
         /*
-         * O histórico começa vazio.
+         * Carrega as conversas do SQLite.
          */
 
+        carregarHistorico();
+    }
+
+
+    /* ========================================= */
+    /* CARREGAR HISTÓRICO DO SQLITE */
+    /* ========================================= */
+
+    private void carregarHistorico() {
+
+        conversas.clear();
+
+        List<Conversa> conversasSalvas =
+                conversaDAO.listar();
+
+
+        for (Conversa conversa :
+                conversasSalvas) {
+
+            List<mensagem> mensagens =
+                    mensagemDAO.listarPorConversa(
+                            conversa.getId()
+                    );
+
+
+            conversa.getMensagens().addAll(
+                    mensagens
+            );
+
+
+            conversas.add(
+                    conversa
+            );
+        }
+
+
         atualizarHistorico();
+
+
+        System.out.println(
+                "Histórico carregado: "
+                        + conversas.size()
+                        + " conversa(s)."
+        );
     }
 
 
@@ -145,11 +211,6 @@ public class ChatController {
     /* ========================================= */
 
     private void carregarTemaSalvo() {
-
-        /*
-         * Durante o initialize(), o Scene pode
-         * ainda não estar disponível.
-         */
 
         Platform.runLater(() -> {
 
@@ -194,13 +255,6 @@ public class ChatController {
                 return;
             }
 
-
-            /*
-             * Busca o tema salvo.
-             *
-             * Se não existir, a classe
-             * PreferenciasConfig retorna "dark".
-             */
 
             String temaSalvo =
                     PreferenciasConfig.carregarTema();
@@ -337,16 +391,9 @@ public class ChatController {
                     lightCss
             );
 
-
             temaClaro = true;
 
-
             temaButton.setText("🌙");
-
-
-            /*
-             * SALVA A PREFERÊNCIA
-             */
 
             PreferenciasConfig.salvarTema(
                     "light"
@@ -369,16 +416,9 @@ public class ChatController {
                     darkCss
             );
 
-
             temaClaro = false;
 
-
             temaButton.setText("☀");
-
-
-            /*
-             * SALVA A PREFERÊNCIA
-             */
 
             PreferenciasConfig.salvarTema(
                     "dark"
@@ -399,31 +439,35 @@ public class ChatController {
     @FXML
     private void enviarMensagem() {
 
-        String mensagem =
+        String mensagemTexto =
                 mensagemField.getText();
 
 
-        if (mensagem == null ||
-                mensagem.isBlank()) {
+        if (mensagemTexto == null ||
+                mensagemTexto.isBlank()) {
 
             return;
         }
 
 
-        mensagem =
-                mensagem.trim();
+        mensagemTexto =
+                mensagemTexto.trim();
 
 
         ultimaPergunta =
-                mensagem;
+                mensagemTexto;
 
+
+        /* ===================================== */
+        /* CRIAR CONVERSA NO SQLITE */
+        /* ===================================== */
 
         if (!tituloGerado) {
 
-            if (!conversaAtual.tituloEditado) {
+            if (!conversaAtual.isTituloEditado()) {
 
                 gerarTituloConversa(
-                        mensagem
+                        mensagemTexto
                 );
             }
 
@@ -431,7 +475,43 @@ public class ChatController {
             tituloGerado = true;
 
 
+            /*
+             * A conversa só é criada no banco
+             * quando a primeira mensagem é enviada.
+             */
+
             if (!conversas.contains(conversaAtual)) {
+
+                long id =
+                        conversaDAO.criar(
+                                conversaAtual
+                        );
+
+
+                if (id == -1) {
+
+                    Alert alerta =
+                            new Alert(
+                                    Alert.AlertType.ERROR
+                            );
+
+                    alerta.setTitle(
+                            "Erro"
+                    );
+
+                    alerta.setHeaderText(
+                            "Não foi possível salvar a conversa"
+                    );
+
+                    alerta.setContentText(
+                            "O banco de dados não conseguiu criar a conversa."
+                    );
+
+                    alerta.showAndWait();
+
+                    return;
+                }
+
 
                 conversas.add(
                         0,
@@ -444,16 +524,32 @@ public class ChatController {
         }
 
 
-        conversaAtual.mensagens.add(
-                new Mensagem(
-                        true,
-                        mensagem
-                )
+        /* ===================================== */
+        /* MENSAGEM DO USUÁRIO */
+        /* ===================================== */
+
+        mensagem mensagemUsuario =
+                new mensagem(
+                        mensagemTexto,
+                        true
+                );
+
+
+        conversaAtual
+                .getMensagens()
+                .add(
+                        mensagemUsuario
+                );
+
+
+        mensagemDAO.salvar(
+                conversaAtual.getId(),
+                mensagemUsuario
         );
 
 
         adicionarMensagemUsuario(
-                mensagem
+                mensagemTexto
         );
 
 
@@ -467,7 +563,11 @@ public class ChatController {
 
 
         String mensagemFinal =
-                mensagem;
+                mensagemTexto;
+
+
+        Conversa conversaDaMensagem =
+                conversaAtual;
 
 
         Thread thread =
@@ -486,11 +586,32 @@ public class ChatController {
                             removerDigitando();
 
 
-                            conversaAtual.mensagens.add(
-                                    new Mensagem(
-                                            false,
-                                            resposta
-                                    )
+                            /*
+                             * Mensagem da IA
+                             */
+
+                            mensagem mensagemIA =
+                                    new mensagem(
+                                            resposta,
+                                            false
+                                    );
+
+
+                            conversaDaMensagem
+                                    .getMensagens()
+                                    .add(
+                                            mensagemIA
+                                    );
+
+
+                            /*
+                             * Salva a resposta
+                             * no SQLite.
+                             */
+
+                            mensagemDAO.salvar(
+                                    conversaDaMensagem.getId(),
+                                    mensagemIA
                             );
 
 
@@ -514,7 +635,6 @@ public class ChatController {
                     } catch (Exception e) {
 
                         String mensagemErro;
-
 
                         String erro =
                                 e.getMessage();
@@ -619,11 +739,27 @@ public class ChatController {
                             removerDigitando();
 
 
-                            conversaAtual.mensagens.add(
-                                    new Mensagem(
-                                            false,
-                                            erroFinal
-                                    )
+                            mensagem mensagemErroIA =
+                                    new mensagem(
+                                            erroFinal,
+                                            false
+                                    );
+
+
+                            conversaDaMensagem
+                                    .getMensagens()
+                                    .add(
+                                            mensagemErroIA
+                                    );
+
+
+                            /*
+                             * Também salva o erro no histórico.
+                             */
+
+                            mensagemDAO.salvar(
+                                    conversaDaMensagem.getId(),
+                                    mensagemErroIA
                             );
 
 
@@ -649,7 +785,6 @@ public class ChatController {
 
         thread.setDaemon(true);
 
-
         thread.start();
     }
 
@@ -670,23 +805,45 @@ public class ChatController {
         removerUltimaMensagemIA();
 
 
-        if (!conversaAtual.mensagens.isEmpty()) {
+        /*
+         * Remove a última resposta da memória.
+         */
+
+        if (!conversaAtual
+                .getMensagens()
+                .isEmpty()) {
 
             int ultimoIndice =
-                    conversaAtual.mensagens.size() - 1;
+                    conversaAtual
+                            .getMensagens()
+                            .size() - 1;
 
 
-            Mensagem ultimaMensagem =
-                    conversaAtual.mensagens.get(
-                            ultimoIndice
-                    );
+            mensagem ultimaMensagem =
+                    conversaAtual
+                            .getMensagens()
+                            .get(
+                                    ultimoIndice
+                            );
 
 
-            if (!ultimaMensagem.usuario) {
+            if (!ultimaMensagem.isUsuario()) {
 
-                conversaAtual.mensagens.remove(
-                        ultimoIndice
-                );
+                conversaAtual
+                        .getMensagens()
+                        .remove(
+                                ultimoIndice
+                        );
+
+
+                /*
+                 * Remove também do SQLite.
+                 */
+
+                mensagemDAO
+                        .excluirUltimaMensagemIA(
+                                conversaAtual.getId()
+                        );
             }
         }
 
@@ -699,6 +856,10 @@ public class ChatController {
 
         String pergunta =
                 ultimaPergunta;
+
+
+        Conversa conversaDaMensagem =
+                conversaAtual;
 
 
         Thread thread =
@@ -717,11 +878,27 @@ public class ChatController {
                             removerDigitando();
 
 
-                            conversaAtual.mensagens.add(
-                                    new Mensagem(
-                                            false,
-                                            novaResposta
-                                    )
+                            mensagem novaMensagem =
+                                    new mensagem(
+                                            novaResposta,
+                                            false
+                                    );
+
+
+                            conversaDaMensagem
+                                    .getMensagens()
+                                    .add(
+                                            novaMensagem
+                                    );
+
+
+                            /*
+                             * Salva a nova resposta.
+                             */
+
+                            mensagemDAO.salvar(
+                                    conversaDaMensagem.getId(),
+                                    novaMensagem
                             );
 
 
@@ -754,11 +931,23 @@ public class ChatController {
                                             "Tente novamente.";
 
 
-                            conversaAtual.mensagens.add(
-                                    new Mensagem(
-                                            false,
-                                            erro
-                                    )
+                            mensagem mensagemErro =
+                                    new mensagem(
+                                            erro,
+                                            false
+                                    );
+
+
+                            conversaDaMensagem
+                                    .getMensagens()
+                                    .add(
+                                            mensagemErro
+                                    );
+
+
+                            mensagemDAO.salvar(
+                                    conversaDaMensagem.getId(),
+                                    mensagemErro
                             );
 
 
@@ -781,13 +970,12 @@ public class ChatController {
 
         thread.setDaemon(true);
 
-
         thread.start();
     }
 
 
     /* ========================================= */
-    /* REMOVER ÚLTIMA MENSAGEM DA IA */
+    /* REMOVER ÚLTIMA MENSAGEM DA IA DA TELA */
     /* ========================================= */
 
     private void removerUltimaMensagemIA() {
@@ -897,8 +1085,9 @@ public class ChatController {
         }
 
 
-        conversaAtual.titulo =
-                titulo;
+        conversaAtual.setTitulo(
+                titulo
+        );
 
 
         if (chatTitle != null) {
@@ -966,7 +1155,7 @@ public class ChatController {
 
             botaoConversa.setText(
                     "💬  " +
-                            conversa.titulo
+                            conversa.getTitulo()
             );
 
 
@@ -1094,7 +1283,7 @@ public class ChatController {
 
         TextInputDialog dialog =
                 new TextInputDialog(
-                        conversa.titulo
+                        conversa.getTitulo()
                 );
 
 
@@ -1152,7 +1341,6 @@ public class ChatController {
 
                         alerta.showAndWait();
 
-
                         return;
                     }
 
@@ -1188,12 +1376,23 @@ public class ChatController {
                     }
 
 
-                    conversa.titulo =
-                            novoTitulo;
+                    conversa.setTitulo(
+                            novoTitulo
+                    );
 
 
-                    conversa.tituloEditado =
-                            true;
+                    conversa.setTituloEditado(
+                            true
+                    );
+
+
+                    /*
+                     * Atualiza o título no SQLite.
+                     */
+
+                    conversaDAO.atualizarTitulo(
+                            conversa
+                    );
 
 
                     if (conversa ==
@@ -1253,50 +1452,58 @@ public class ChatController {
         if (chatTitle != null) {
 
             chatTitle.setText(
-                    conversa.titulo
+                    conversa.getTitulo()
             );
         }
 
 
+        /*
+         * Mostra todas as mensagens salvas.
+         */
+
         for (
-                Mensagem mensagem :
-                conversa.mensagens
+                mensagem mensagem :
+                conversa.getMensagens()
         ) {
 
-            if (mensagem.usuario) {
+            if (mensagem.isUsuario()) {
 
                 adicionarMensagemUsuario(
-                        mensagem.texto
+                        mensagem.getTexto()
                 );
 
             } else {
 
                 adicionarMensagemIA(
-                        mensagem.texto
+                        mensagem.getTexto()
                 );
             }
         }
 
 
+        /*
+         * Recupera a última pergunta.
+         */
+
         for (
                 int i =
-                conversa.mensagens.size() - 1;
+                conversa.getMensagens().size() - 1;
 
                 i >= 0;
 
                 i--
         ) {
 
-            Mensagem mensagem =
-                    conversa.mensagens.get(
-                            i
-                    );
+            mensagem mensagem =
+                    conversa
+                            .getMensagens()
+                            .get(i);
 
 
-            if (mensagem.usuario) {
+            if (mensagem.isUsuario()) {
 
                 ultimaPergunta =
-                        mensagem.texto;
+                        mensagem.getTexto();
 
                 break;
             }
@@ -1347,7 +1554,7 @@ public class ChatController {
 
         confirmacao.setContentText(
                 "A conversa \"" +
-                        conversa.titulo +
+                        conversa.getTitulo() +
                         "\" será removida do histórico."
         );
 
@@ -1381,10 +1588,28 @@ public class ChatController {
                     }
 
 
+                    /*
+                     * Exclui primeiro do SQLite.
+                     */
+
+                    conversaDAO.excluir(
+                            conversa.getId()
+                    );
+
+
+                    /*
+                     * Remove da memória.
+                     */
+
                     conversas.remove(
                             conversa
                     );
 
+
+                    /*
+                     * Se era a conversa atual,
+                     * volta para uma conversa vazia.
+                     */
 
                     if (conversa ==
                             conversaAtual) {
@@ -1427,7 +1652,7 @@ public class ChatController {
 
                     System.out.println(
                             "Conversa removida: " +
-                                    conversa.titulo
+                                    conversa.getTitulo()
                     );
                 }
         );
@@ -1819,15 +2044,34 @@ public class ChatController {
     @FXML
     private void limparConversa() {
 
-        conversaAtual.mensagens.clear();
+        /*
+         * Se a conversa já existe no banco,
+         * remove do SQLite.
+         */
+
+        if (conversaAtual.getId() > 0) {
+
+            conversaDAO.excluir(
+                    conversaAtual.getId()
+            );
+        }
 
 
-        conversaAtual.titulo =
-                "Conversa atual";
+        /*
+         * Remove da lista em memória.
+         */
+
+        conversas.remove(
+                conversaAtual
+        );
 
 
-        conversaAtual.tituloEditado =
-                false;
+        /*
+         * Cria uma nova conversa vazia.
+         */
+
+        conversaAtual =
+                new Conversa();
 
 
         tituloGerado = false;
@@ -1852,11 +2096,6 @@ public class ChatController {
         mostrarMensagemInicial();
 
 
-        conversas.remove(
-                conversaAtual
-        );
-
-
         mensagemField.clear();
 
 
@@ -1864,6 +2103,11 @@ public class ChatController {
 
 
         atualizarHistorico();
+
+
+        System.out.println(
+                "Conversa atual limpa."
+        );
     }
 
 
@@ -1937,49 +2181,5 @@ public class ChatController {
                 .add(
                         inicio
                 );
-    }
-
-
-    /* ========================================= */
-    /* CLASSE CONVERSA */
-    /* ========================================= */
-
-    private static class Conversa {
-
-        private String titulo =
-                "Conversa atual";
-
-
-        private boolean tituloEditado =
-                false;
-
-
-        private final List<Mensagem> mensagens =
-                new ArrayList<>();
-    }
-
-
-    /* ========================================= */
-    /* CLASSE MENSAGEM */
-    /* ========================================= */
-
-    private static class Mensagem {
-
-        private final boolean usuario;
-
-        private final String texto;
-
-
-        private Mensagem(
-                boolean usuario,
-                String texto
-        ) {
-
-            this.usuario =
-                    usuario;
-
-            this.texto =
-                    texto;
-        }
     }
 }
