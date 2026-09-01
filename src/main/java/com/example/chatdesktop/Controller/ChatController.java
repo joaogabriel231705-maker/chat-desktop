@@ -1,11 +1,11 @@
 package com.example.chatdesktop.Controller;
 
+import com.example.chatdesktop.config.PreferenciasConfig;
 import com.example.chatdesktop.service.RagService;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
@@ -96,12 +96,7 @@ public class ChatController {
 
         ragService = new RagService();
 
-        /*
-         * Cria a primeira conversa.
-         */
-
-        conversaAtual =
-                new Conversa();
+        conversaAtual = new Conversa();
     }
 
 
@@ -123,7 +118,11 @@ public class ChatController {
         );
 
 
-        carregarTemaEscuro();
+        /*
+         * Carrega o tema salvo no computador.
+         */
+
+        carregarTemaSalvo();
 
 
         /*
@@ -142,10 +141,10 @@ public class ChatController {
 
 
     /* ========================================= */
-    /* TEMA ESCURO INICIAL */
+    /* CARREGAR TEMA SALVO */
     /* ========================================= */
 
-    private void carregarTemaEscuro() {
+    private void carregarTemaSalvo() {
 
         /*
          * Durante o initialize(), o Scene pode
@@ -164,10 +163,26 @@ public class ChatController {
             }
 
 
+            URL lightUrl =
+                    getClass().getResource(
+                            "/com/example/chatdesktop/css/light.css"
+                    );
+
+
             URL darkUrl =
                     getClass().getResource(
                             "/com/example/chatdesktop/css/style.css"
                     );
+
+
+            if (lightUrl == null) {
+
+                System.out.println(
+                        "ERRO: light.css não encontrado!"
+                );
+
+                return;
+            }
 
 
             if (darkUrl == null) {
@@ -180,20 +195,69 @@ public class ChatController {
             }
 
 
+            /*
+             * Busca o tema salvo.
+             *
+             * Se não existir, a classe
+             * PreferenciasConfig retorna "dark".
+             */
+
+            String temaSalvo =
+                    PreferenciasConfig.carregarTema();
+
+
             scene.getStylesheets().clear();
 
 
-            scene.getStylesheets().add(
-                    darkUrl.toExternalForm()
-            );
+            /* ===================================== */
+            /* TEMA CLARO */
+            /* ===================================== */
+
+            if ("light".equals(temaSalvo)) {
+
+                scene.getStylesheets().add(
+                        lightUrl.toExternalForm()
+                );
 
 
-            temaClaro = false;
+                temaClaro = true;
 
 
-            if (temaButton != null) {
+                if (temaButton != null) {
 
-                temaButton.setText("☀");
+                    temaButton.setText("🌙");
+                }
+
+
+                System.out.println(
+                        "Tema salvo carregado: claro"
+                );
+            }
+
+
+            /* ===================================== */
+            /* TEMA ESCURO */
+            /* ===================================== */
+
+            else {
+
+                scene.getStylesheets().add(
+                        darkUrl.toExternalForm()
+                );
+
+
+                temaClaro = false;
+
+
+                if (temaButton != null) {
+
+                    temaButton.setText("☀");
+                }
+
+
+                System.out.println(
+                        "Tema salvo carregado: escuro"
+                );
             }
         });
     }
@@ -280,8 +344,17 @@ public class ChatController {
             temaButton.setText("🌙");
 
 
+            /*
+             * SALVA A PREFERÊNCIA
+             */
+
+            PreferenciasConfig.salvarTema(
+                    "light"
+            );
+
+
             System.out.println(
-                    "Tema claro ativado!"
+                    "Tema claro ativado e salvo!"
             );
         }
 
@@ -303,8 +376,17 @@ public class ChatController {
             temaButton.setText("☀");
 
 
+            /*
+             * SALVA A PREFERÊNCIA
+             */
+
+            PreferenciasConfig.salvarTema(
+                    "dark"
+            );
+
+
             System.out.println(
-                    "Tema escuro ativado!"
+                    "Tema escuro ativado e salvo!"
             );
         }
     }
@@ -332,25 +414,11 @@ public class ChatController {
                 mensagem.trim();
 
 
-        /* ===================================== */
-        /* SALVA A ÚLTIMA PERGUNTA */
-        /* ===================================== */
-
         ultimaPergunta =
                 mensagem;
 
 
-        /* ===================================== */
-        /* PRIMEIRA MENSAGEM DA CONVERSA */
-        /* ===================================== */
-
         if (!tituloGerado) {
-
-            /*
-             * Só gera automaticamente o título
-             * se o usuário ainda não tiver
-             * colocado um título manual.
-             */
 
             if (!conversaAtual.tituloEditado) {
 
@@ -362,10 +430,6 @@ public class ChatController {
 
             tituloGerado = true;
 
-
-            /*
-             * Adiciona a conversa ao histórico.
-             */
 
             if (!conversas.contains(conversaAtual)) {
 
@@ -380,10 +444,6 @@ public class ChatController {
         }
 
 
-        /* ===================================== */
-        /* SALVA MENSAGEM DO USUÁRIO */
-        /* ===================================== */
-
         conversaAtual.mensagens.add(
                 new Mensagem(
                         true,
@@ -391,10 +451,6 @@ public class ChatController {
                 )
         );
 
-
-        /* ===================================== */
-        /* MOSTRA MENSAGEM DO USUÁRIO */
-        /* ===================================== */
 
         adicionarMensagemUsuario(
                 mensagem
@@ -414,22 +470,10 @@ public class ChatController {
                 mensagem;
 
 
-        /* ===================================== */
-        /* THREAD DA IA */
-        /* ===================================== */
-
         Thread thread =
                 new Thread(() -> {
 
                     try {
-
-                        /*
-                         * O RagService decide:
-                         *
-                         * DOCUMENTO → RAG
-                         *
-                         * SEM DOCUMENTO → GROQ
-                         */
 
                         String resposta =
                                 ragService.responder(
@@ -441,10 +485,6 @@ public class ChatController {
 
                             removerDigitando();
 
-
-                            /*
-                             * Salva a resposta da IA.
-                             */
 
                             conversaAtual.mensagens.add(
                                     new Mensagem(
@@ -893,17 +933,8 @@ public class ChatController {
                 .clear();
 
 
-        /*
-         * Mostra as conversas da mais recente
-         * para a mais antiga.
-         */
-
         for (Conversa conversa :
                 conversas) {
-
-            /* ================================= */
-            /* LINHA DA CONVERSA */
-            /* ================================= */
 
             HBox linha =
                     new HBox();
@@ -928,10 +959,6 @@ public class ChatController {
                     "history-item"
             );
 
-
-            /* ================================= */
-            /* BOTÃO DA CONVERSA */
-            /* ================================= */
 
             Button botaoConversa =
                     new Button();
@@ -979,10 +1006,6 @@ public class ChatController {
             );
 
 
-            /* ================================= */
-            /* BOTÃO EDITAR TÍTULO */
-            /* ================================= */
-
             Button editarButton =
                     new Button(
                             "✏️"
@@ -1013,10 +1036,6 @@ public class ChatController {
                             )
             );
 
-
-            /* ================================= */
-            /* BOTÃO EXCLUIR */
-            /* ================================= */
 
             Button removerButton =
                     new Button(
@@ -1049,20 +1068,12 @@ public class ChatController {
             );
 
 
-            /* ================================= */
-            /* ADICIONA OS BOTÕES */
-            /* ================================= */
-
             linha.getChildren().addAll(
                     botaoConversa,
                     editarButton,
                     removerButton
             );
 
-
-            /* ================================= */
-            /* ADICIONA NO HISTÓRICO */
-            /* ================================= */
 
             historicoContainer
                     .getChildren()
@@ -1318,12 +1329,6 @@ public class ChatController {
             Conversa conversa
     ) {
 
-        /*
-         * =====================================
-         * CRIA A JANELA DE CONFIRMAÇÃO
-         * =====================================
-         */
-
         Alert confirmacao =
                 new Alert(
                         Alert.AlertType.CONFIRMATION
@@ -1347,12 +1352,6 @@ public class ChatController {
         );
 
 
-        /*
-         * =====================================
-         * CRIA OS BOTÕES
-         * =====================================
-         */
-
         ButtonType excluirButton =
                 new ButtonType(
                         "Excluir"
@@ -1372,19 +1371,8 @@ public class ChatController {
         );
 
 
-        /*
-         * =====================================
-         * ESPERA A ESCOLHA DO USUÁRIO
-         * =====================================
-         */
-
         confirmacao.showAndWait().ifPresent(
                 resposta -> {
-
-                    /*
-                     * Se clicou em cancelar,
-                     * simplesmente não faz nada.
-                     */
 
                     if (resposta !=
                             excluirButton) {
@@ -1393,22 +1381,10 @@ public class ChatController {
                     }
 
 
-                    /*
-                     * =================================
-                     * REMOVE A CONVERSA
-                     * =================================
-                     */
-
                     conversas.remove(
                             conversa
                     );
 
-
-                    /*
-                     * =================================
-                     * SE ERA A CONVERSA ABERTA
-                     * =================================
-                     */
 
                     if (conversa ==
                             conversaAtual) {
@@ -1445,12 +1421,6 @@ public class ChatController {
                         mensagemField.requestFocus();
                     }
 
-
-                    /*
-                     * =================================
-                     * ATUALIZA O HISTÓRICO
-                     * =================================
-                     */
 
                     atualizarHistorico();
 
@@ -1587,10 +1557,6 @@ public class ChatController {
         );
 
 
-        /* ===================================== */
-        /* BOTÃO COPIAR */
-        /* ===================================== */
-
         Button copiarButton =
                 new Button(
                         "📋  Copiar"
@@ -1649,10 +1615,6 @@ public class ChatController {
         );
 
 
-        /* ===================================== */
-        /* BOTÃO REGENERAR */
-        /* ===================================== */
-
         Button regenerarButton =
                 new Button(
                         "↻  Regenerar"
@@ -1669,10 +1631,6 @@ public class ChatController {
                         regenerarResposta()
         );
 
-
-        /* ===================================== */
-        /* CONTAINER DOS BOTÕES */
-        /* ===================================== */
 
         HBox botoes =
                 new HBox(
@@ -1813,10 +1771,6 @@ public class ChatController {
     @FXML
     private void novaConversa() {
 
-        /*
-         * A conversa atual continua no histórico.
-         */
-
         conversaAtual =
                 new Conversa();
 
@@ -1827,18 +1781,10 @@ public class ChatController {
         ultimaPergunta = null;
 
 
-        /*
-         * Limpa a área de mensagens.
-         */
-
         mensagensContainer
                 .getChildren()
                 .clear();
 
-
-        /*
-         * Volta o título.
-         */
 
         if (chatTitle != null) {
 
@@ -1848,16 +1794,8 @@ public class ChatController {
         }
 
 
-        /*
-         * Mostra mensagem inicial.
-         */
-
         mostrarMensagemInicial();
 
-
-        /*
-         * Atualiza o histórico.
-         */
 
         atualizarHistorico();
 
@@ -1881,16 +1819,8 @@ public class ChatController {
     @FXML
     private void limparConversa() {
 
-        /*
-         * Limpa as mensagens.
-         */
-
         conversaAtual.mensagens.clear();
 
-
-        /*
-         * Reseta o título.
-         */
 
         conversaAtual.titulo =
                 "Conversa atual";
@@ -1905,10 +1835,6 @@ public class ChatController {
 
         ultimaPergunta = null;
 
-
-        /*
-         * Limpa a tela.
-         */
 
         mensagensContainer
                 .getChildren()
@@ -1925,11 +1851,6 @@ public class ChatController {
 
         mostrarMensagemInicial();
 
-
-        /*
-         * Se a conversa estava no histórico,
-         * remove ela porque ficou vazia.
-         */
 
         conversas.remove(
                 conversaAtual
@@ -2028,11 +1949,6 @@ public class ChatController {
         private String titulo =
                 "Conversa atual";
 
-
-        /*
-         * Indica se o usuário alterou
-         * manualmente o título.
-         */
 
         private boolean tituloEditado =
                 false;
